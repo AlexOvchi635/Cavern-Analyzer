@@ -373,12 +373,39 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 .item-row-score{font-size:15px;font-weight:900;color:#ffd7a2;white-space:nowrap;}
 .item-modal-footer{display:flex;justify-content:flex-end;margin-top:18px;}
 .item-modal-footer .item-modal-close{min-width:160px;}
+.mode-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px;}
+.mode-tab{
+  border:none;border-radius:10px;padding:11px 15px;cursor:pointer;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#e6e6e6;
+  font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;transition:all .22s;
+}
+.mode-tab:hover{border-color:rgba(201,168,112,.28);color:#f2dfba;}
+.mode-tab.active{background:linear-gradient(135deg,rgba(121,121,121,.95),rgba(155,155,155,.95));color:#fff;box-shadow:0 0 18px rgba(145,145,145,.16);}
+.mode-page,.mode-section{display:none;}
+.mode-page.active,.mode-section.active{display:block;}
+.wallet-upgrade-grid{display:grid;grid-template-columns:minmax(280px,340px) 1fr;gap:18px;}
+.wallet-upgrade-main{
+  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),#151515;border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;padding:16px;
+}
+.wallet-upgrade-main img{width:min(100%,230px);display:block;margin:0 auto 10px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4));}
+.wallet-upgrade-price{font-size:28px;font-weight:900;color:#f2dfba;text-align:center;}
+.wallet-upgrade-market{font-size:12px;color:#9a9a9a;text-align:center;margin-top:4px;}
+.wallet-upgrade-meta{display:grid;gap:10px;}
+.mini-list{display:grid;gap:10px;}
+.mini-row{
+  display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+  padding:11px 12px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;
+}
+.mini-row strong{font-size:13px;}
+.mini-row span{font-size:12px;color:var(--dim2);line-height:1.5;}
 
 @media (max-width:1100px){
   .hero-visual{display:none;}
   .hero{grid-template-columns:1fr;}
   .control-grid,.content-grid,.traits-grid{grid-template-columns:1fr;}
   .metrics-grid{grid-template-columns:repeat(2,1fr);}
+  .wallet-upgrade-grid{grid-template-columns:1fr;}
 }
 @media (max-width:780px){
   nav{padding:12px 20px;}
@@ -408,6 +435,8 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
   .item-modal-card{padding:18px 16px 16px;}
   .item-modal-top{grid-template-columns:1fr;}
   .item-modal-title{font-size:24px;}
+  .mode-tabs{gap:8px;}
+  .mode-tab{width:100%;justify-content:center;}
 }
 </style>
 </head>
@@ -449,6 +478,11 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 
 <section id="workspace">
   <div class="wrap">
+    <div class="mode-tabs">
+      <button type="button" class="mode-tab active" data-mode-tab="analyzer">Team Analyzer</button>
+      <button type="button" class="mode-tab" data-mode-tab="wallet">Wallet Advisor</button>
+    </div>
+    <div class="mode-page active" id="analyzerModePanel">
     <div class="panel">
       <div class="panel-head">
         <h3>Analyzer</h3>
@@ -467,12 +501,37 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
         </div>
       </div>
     </div>
+    </div>
+    <div class="mode-page" id="walletModePanel">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Wallet Advisor</h3>
+        </div>
+        <div class="field-grid">
+          <div class="field full">
+            <label for="walletInput">TON Wallet</label>
+            <input id="walletInput" value="UQBrMGL8VMThMGF2fUE6rVoxIX79A9g4NIRA5wX7SUGD3iND" placeholder="UQ...">
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn-m" id="analyzeWalletBtn">Analyze Wallet</button>
+        </div>
+        <div class="status" id="walletStatus">
+          <div class="status-title">Current Step</div>
+          <div class="status-text">Ready to analyze a wallet.</div>
+          <div class="status-bar">
+            <div class="status-fill"></div>
+            <div class="status-flag"><img src="c-logo-nobg.png" alt="Cavern"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <div class="hr"></div>
 
-<section id="top-teams">
+<section id="top-teams" class="mode-section active" data-mode-section="analyzer">
   <div class="wrap">
     <div class="lbl">Top Variants</div>
     <div class="ttl">Top <em>10 Teams</em> by Power and Synergies</div>
@@ -485,6 +544,72 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
     </div>
     <div class="variant-grid" id="topTeamsGrid">
       <div class="empty-state">After the scan, the 10 strongest unique Cavern teams will appear here.</div>
+    </div>
+  </div>
+</section>
+
+<section id="wallet-summary" class="mode-section" data-mode-section="wallet">
+  <div class="wrap">
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="n" id="walletOwnedCount">0</div>
+        <div class="k">Owned Cavern Orcs</div>
+        <div class="v">Filtered from the wallet address.</div>
+      </div>
+      <div class="metric">
+        <div class="n" id="walletCurrentBestScore">0 PWR</div>
+        <div class="k">Best Current Team</div>
+        <div class="v">Total score of the strongest owned lineup.</div>
+      </div>
+      <div class="metric">
+        <div class="n" id="walletMarketCount">0</div>
+        <div class="k">Listed Cavern Orcs</div>
+        <div class="v">Live market candidates checked right now.</div>
+      </div>
+      <div class="metric">
+        <div class="n" id="walletBestDelta">0 PWR</div>
+        <div class="k">Best +1 Upgrade</div>
+        <div class="v">Maximum total-score gain from one purchase.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="wallet-current-team" class="mode-section" data-mode-section="wallet">
+  <div class="wrap">
+    <div class="lbl">Current Team</div>
+    <div class="ttl">Best <em>Owned Team</em></div>
+    <div class="desc" id="walletCurrentTeamMeta">Analyze a wallet to see the best current Cavern lineup.</div>
+    <div class="variant-card" id="walletCurrentTeamCard">
+      <div class="empty-state">No wallet analysis yet.</div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="wallet-upgrade" class="mode-section" data-mode-section="wallet">
+  <div class="wrap">
+    <div class="lbl">Market Upgrade</div>
+    <div class="ttl">Best <em>Single Purchase</em></div>
+    <div class="desc" id="walletUpgradeMeta">The advisor will compare listed Cavern orcs and find the strongest one-orc upgrade for the wallet.</div>
+    <div class="variant-card" id="walletUpgradeCard">
+      <div class="empty-state">Analyze a wallet to get the best single market purchase recommendation.</div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="wallet-owned-roster" class="mode-section" data-mode-section="wallet">
+  <div class="wrap">
+    <div class="lbl">Owned Cavern</div>
+    <div class="ttl">Wallet <em>Orcs</em></div>
+    <div class="desc">These are the Cavern orcs currently owned by the wallet and used for the recommendation model.</div>
+    <div class="roster-grid" id="walletOwnedGrid">
+      <div class="empty-state">No wallet data loaded yet.</div>
     </div>
   </div>
 </section>
@@ -602,6 +727,8 @@ const BRACELET_TEAM_BONUS = { 4: 400 };
 const LOGO_TEAM_BONUS = { 4: 400, 5: 500, 6: 700, 7: 1000 };
 const FULL_TEAM_BONUS_PER_ORC = 50;
 const REQUEST_TIMEOUT_MS = 20000;
+const MARKET_CACHE_TTL_MS = 5 * 60 * 1000;
+const WALLET_COLLECTION_NAME = "Unstoppable Tribe from ZarGates";
 const TEAM_LOGO_KEYS = new Set([
   "zargates", "bitcoin", "telegram", "ton", "tribo games", "dollar", "eth", "rub", "elephant"
 ]);
@@ -611,7 +738,14 @@ const state = {
   topTeams: [],
   sortMode: "strongest",
   lastRun: null,
-  isRunning: false
+  isRunning: false,
+  activeMode: "analyzer",
+  walletRunning: false,
+  walletItems: [],
+  walletMarketItems: [],
+  walletCurrentTeam: null,
+  walletBestUpgrade: null,
+  walletMarketCache: null
 };
 
 function norm(value) {
@@ -637,6 +771,17 @@ function formatNumber(value) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function canonicalTraitType(traitType) {
+  const text = norm(traitType);
+  if (text === "earring" || text === "earrings") {
+    return "Earrings";
+  }
+  if (text === "bracelets") {
+    return "Bracelet";
+  }
+  return String(traitType || "").trim();
 }
 
 function createNetworkErrorMessage(error, url) {
@@ -678,8 +823,11 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-function setStatus(message, kind = "", progress = null) {
-  const status = document.getElementById("loadStatus");
+function setStatusFor(statusId, message, kind = "", progress = null) {
+  const status = document.getElementById(statusId);
+  if (!status) {
+    return;
+  }
   const text = status.querySelector(".status-text");
   const fill = status.querySelector(".status-fill");
   const flag = status.querySelector(".status-flag");
@@ -702,8 +850,16 @@ function setStatus(message, kind = "", progress = null) {
   }
 }
 
-function resetStatusProgress() {
-  const status = document.getElementById("loadStatus");
+function setStatus(message, kind = "", progress = null) {
+  setStatusFor("loadStatus", message, kind, progress);
+}
+
+function setWalletStatus(message, kind = "", progress = null) {
+  setStatusFor("walletStatus", message, kind, progress);
+}
+
+function resetStatusProgress(statusId = "loadStatus") {
+  const status = document.getElementById(statusId);
   if (status) {
     status.dataset.progress = "0";
   }
@@ -1443,7 +1599,7 @@ function normalizeItem(rawItem, config) {
   const cleanAttributes = attributes
     .filter((attr) => attr && attr.trait_type && attr.value !== undefined && attr.value !== null)
     .map((attr) => ({
-      trait_type: String(attr.trait_type).trim(),
+      trait_type: canonicalTraitType(attr.trait_type),
       value: String(attr.value).trim()
     }));
 
@@ -1467,6 +1623,9 @@ function normalizeItem(rawItem, config) {
   const localCombo = buildLocalAttributeCombo(cleanAttributes);
   const power = attributePower + numberPower + localCombo.bonus;
   const score = power + (matchesFocus ? config.focusBonus : 0);
+  const saleValueRaw = rawItem?.sale?.price?.value;
+  const saleDecimals = Number(rawItem?.sale?.price?.decimals || 0);
+  const salePriceValue = saleValueRaw ? Number(saleValueRaw) / Math.pow(10, saleDecimals) : 0;
   const synergyTraits = cleanAttributes
     .filter((attr) => norm(attr.trait_type) !== targetTrait)
     .map((attr) => `${attr.trait_type}: ${attr.value}`);
@@ -1490,7 +1649,11 @@ function normalizeItem(rawItem, config) {
     synergyTraits,
     synergyTraitSet: new Set(synergyTraits),
     logoMatches: getLogoMatches(cleanAttributes),
-    market: metadata.marketplace || "getgems.io"
+    market: metadata.marketplace || "getgems.io",
+    saleAddress: rawItem?.sale?.address || null,
+    saleMarket: rawItem?.sale?.market?.name || null,
+    salePriceValue,
+    saleOwner: rawItem?.sale?.owner?.address || null
   };
 }
 
@@ -1998,6 +2161,399 @@ function renderTraits(items) {
     .join("");
 }
 
+function getWalletConfig() {
+  const base = getConfig();
+  return {
+    ...base,
+    traitType: "Skin Tone",
+    traitValue: "Cavern",
+    focusBonus: 0
+  };
+}
+
+function isWalletCollectionMatch(rawItem) {
+  return norm(rawItem?.collection?.name) === norm(WALLET_COLLECTION_NAME);
+}
+
+function formatTonPrice(item) {
+  const value = Number(item?.salePriceValue || 0);
+  return Number.isFinite(value) && value > 0
+    ? `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value)} TON`
+    : "No price";
+}
+
+async function fetchWalletCavernItems(walletAddress, config, onProgress) {
+  const items = [];
+  const seen = new Set();
+  let offset = 0;
+  let page = 0;
+  const limit = 100;
+
+  while (true) {
+    const url = `https://tonapi.io/v2/accounts/${encodeURIComponent(walletAddress)}/nfts?limit=${limit}&offset=${offset}`;
+    const data = await fetchJsonWithRetry(url, { headers: { accept: "application/json" } }, {
+      maxAttempts: 5,
+      onRetry(waitMs, attempt, retryReason) {
+        onProgress(
+          retryReason
+            ? `${retryReason} Waiting ${Math.ceil(waitMs / 1000)}s and retrying wallet scan (${attempt}/5)...`
+            : `Wallet scan retry ${attempt}/5...`,
+          { page: page + 1, count: items.length }
+        );
+      }
+    });
+    const batch = Array.isArray(data?.nft_items) ? data.nft_items : [];
+
+    for (const rawItem of batch) {
+      const key = rawItem?.address;
+      if (!key || seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      if (isWalletCollectionMatch(rawItem) && rawItemMatchesFocus(rawItem, config)) {
+        items.push(rawItem);
+      }
+    }
+
+    onProgress(`Wallet scan: page ${page + 1} · found ${items.length} owned Cavern orcs...`, { page: page + 1, count: items.length });
+
+    if (!batch.length || batch.length < limit) {
+      break;
+    }
+    offset += batch.length;
+    page += 1;
+    await sleep(120);
+  }
+
+  return items;
+}
+
+async function fetchListedWalletMarketItems(config, onProgress) {
+  const matchedItems = [];
+  const seen = new Set();
+  const totalCount = await fetchCollectionSize(KNOWN_GETGEMS_COLLECTIONS.unstoppabletribe);
+  let offset = 0;
+  let page = 0;
+  const limit = 100;
+  let checkedCount = 0;
+
+  while (true) {
+    const url = `https://tonapi.io/v2/nfts/collections/${encodeURIComponent(KNOWN_GETGEMS_COLLECTIONS.unstoppabletribe)}/items?limit=${limit}&offset=${offset}`;
+    const data = await fetchJsonWithRetry(url, { headers: { accept: "application/json" } }, {
+      maxAttempts: 6,
+      onRetry(waitMs, attempt, retryReason) {
+        onProgress(
+          retryReason
+            ? `${retryReason} Waiting ${Math.ceil(waitMs / 1000)}s and retrying market scan (${attempt}/6)...`
+            : `TonAPI 429 during market scan. Retrying (${attempt}/6)...`,
+          { checkedCount, totalCount }
+        );
+      }
+    });
+    const batch = Array.isArray(data?.nft_items) ? data.nft_items : [];
+
+    for (const rawItem of batch) {
+      const key = rawItem?.address;
+      if (!key || seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      checkedCount += 1;
+      if (rawItem?.sale?.price?.value && rawItemMatchesFocus(rawItem, config)) {
+        matchedItems.push(rawItem);
+      }
+    }
+
+    onProgress(
+      `Market scan: checked ${formatNumber(checkedCount)}/${formatNumber(totalCount || checkedCount)} items · found ${matchedItems.length} listed Cavern orcs...`,
+      { checkedCount, totalCount }
+    );
+
+    if (!batch.length || batch.length < limit) {
+      break;
+    }
+    offset += batch.length;
+    page += 1;
+    await sleep(120);
+  }
+
+  return matchedItems;
+}
+
+function renderWalletSummary(walletItems, currentTeam, marketItems, bestUpgrade) {
+  document.getElementById("walletOwnedCount").textContent = formatNumber(walletItems.length);
+  document.getElementById("walletCurrentBestScore").textContent = `${formatNumber(currentTeam?.result?.totalScore || 0)} PWR`;
+  document.getElementById("walletMarketCount").textContent = formatNumber(marketItems.length);
+  document.getElementById("walletBestDelta").textContent = bestUpgrade ? `+${formatNumber(bestUpgrade.delta)} PWR` : "0 PWR";
+}
+
+function getWalletTeamBadges(item, entry) {
+  const badges = [];
+  const earring = getAttributeValue(item, "Earrings");
+  const bracelet = getAttributeValue(item, "Bracelet");
+  if (item.numberPower > 0) badges.push('<span class="slot-pill number">Number</span>');
+  if (item.localComboBonus > 0) badges.push('<span class="slot-pill combo">Combo</span>');
+  if (earring && entry.result.synergyDetails.some((detail) => detail.trait === `Earrings: ${earring}`)) {
+    badges.push('<span class="slot-pill earring">Earring</span>');
+  }
+  if (bracelet && entry.result.synergyDetails.some((detail) => detail.trait === `Bracelet: ${bracelet}`)) {
+    badges.push('<span class="slot-pill bracelet">Bracelet</span>');
+  }
+  return badges.join("");
+}
+
+function renderWalletCurrentTeam(entry) {
+  const root = document.getElementById("walletCurrentTeamCard");
+  const meta = document.getElementById("walletCurrentTeamMeta");
+  if (!entry || !entry.result.coverage) {
+    root.innerHTML = `<div class="empty-state">This wallet does not have enough Cavern orcs to build a team yet.</div>`;
+    meta.textContent = "The wallet currently has no complete Cavern recommendation.";
+    return;
+  }
+
+  meta.textContent = `${entry.result.coverage} owned orcs used · ${formatNumber(entry.result.totalScore)} total PWR · ${formatNumber(entry.result.synergyScore)} synergy PWR`;
+  const slots = EMOTIONS.map((emotion, index) => {
+    const item = entry.team[index];
+    if (!item) {
+      return `<div class="slot empty"><div class="slot-cover"></div><div class="slot-body"><div class="slot-tag">${escapeHtml(emotion)}</div><div class="slot-meta">0 PWR</div><div class="slot-score"><div class="score-main">No owned orc</div><div class="score-sub">empty slot</div></div></div></div>`;
+    }
+    const breakdown = [];
+    if (item.numberPower > 0) breakdown.push(`<div class="slot-breakdown-line">Number Power: +${formatNumber(item.numberPower)}</div>`);
+    if (item.localComboBonus > 0) breakdown.push(`<div class="slot-breakdown-line">Local Combo: +${formatNumber(item.localComboBonus)}</div>`);
+    return `
+      <div class="slot">
+        <div class="slot-cover"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'"></div>
+        <div class="slot-body">
+          <div class="slot-tag">${escapeHtml(emotion)}</div>
+          <div class="slot-meta">${formatNumber(item.power)} PWR</div>
+          <div class="slot-badges">${getWalletTeamBadges(item, entry) || '<span class="slot-pill">Base</span>'}</div>
+          <div class="slot-score"><div class="score-main">${escapeHtml(item.name)}</div><div class="score-sub">${escapeHtml(emotion)}</div></div>
+          ${breakdown.length ? `<div class="slot-breakdown">${breakdown.join("")}</div>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+  root.innerHTML = `<div class="team-board"><div class="team-slots">${slots}</div></div>`;
+}
+
+function renderWalletOwnedGrid(items) {
+  const root = document.getElementById("walletOwnedGrid");
+  if (!items.length) {
+    root.innerHTML = `<div class="empty-state">No Cavern orcs were found in this wallet.</div>`;
+    return;
+  }
+  const sorted = [...items].sort((a, b) => b.score - a.score || b.power - a.power || a.name.localeCompare(b.name, "ru"));
+  root.innerHTML = sorted.map((item) => `
+    <article class="orc-card">
+      <div class="orc-cover"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'"></div>
+      <div class="orc-body">
+        <div class="orc-name">${escapeHtml(item.name)}</div>
+        <div class="orc-sub">${escapeHtml(item.emotion)} · #${escapeHtml(item.number ?? "?")}</div>
+        <div class="orc-stats">
+          <span class="tag">Power ${formatNumber(item.power)}</span>
+          <span class="tag">Traits ${formatNumber(item.attributePower)}</span>
+          ${item.numberPower > 0 ? `<span class="tag">Number +${formatNumber(item.numberPower)}</span>` : ""}
+          ${item.localComboBonus > 0 ? `<span class="tag">Combo +${formatNumber(item.localComboBonus)}</span>` : ""}
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+function buildWalletMarketShortlist(items) {
+  const selected = new Map();
+  const overall = [...items].sort((a, b) => b.score - a.score || a.salePriceValue - b.salePriceValue);
+  overall.slice(0, 30).forEach((item) => selected.set(item.address, item));
+  EMOTIONS.forEach((emotion) => {
+    overall
+      .filter((item) => item.emotion === emotion)
+      .slice(0, 12)
+      .forEach((item) => selected.set(item.address, item));
+  });
+  return [...selected.values()].slice(0, 90);
+}
+
+function buildWalletUpgradeReasons(baseEntry, upgradedEntry, candidate) {
+  const reasons = [];
+  const replaced = baseEntry.team[EMOTIONS.indexOf(candidate.emotion)];
+  reasons.push(replaced ? `Upgrades ${candidate.emotion} slot` : `Closes missing ${candidate.emotion} slot`);
+  const baseMap = new Map(baseEntry.result.synergyDetails.map((detail) => [detail.trait, detail]));
+  for (const detail of upgradedEntry.result.synergyDetails) {
+    const previous = baseMap.get(detail.trait);
+    if (!previous) {
+      reasons.push(`Adds ${detail.trait} (+${formatNumber(detail.bonus)})`);
+    } else if (detail.bonus > previous.bonus) {
+      reasons.push(`Boosts ${detail.trait} from +${formatNumber(previous.bonus)} to +${formatNumber(detail.bonus)}`);
+    }
+  }
+  if (candidate.numberPower > 0) reasons.push(`Includes Number Power +${formatNumber(candidate.numberPower)}`);
+  if (candidate.localComboBonus > 0) reasons.push(`Includes Local Combo +${formatNumber(candidate.localComboBonus)}`);
+  return reasons.slice(0, 5);
+}
+
+async function findBestWalletUpgrade(walletItems, marketItems, config, onProgress) {
+  if (!walletItems.length || !marketItems.length) {
+    return null;
+  }
+  const baseEntry = await buildBeamBestTeam(walletItems, config);
+  const walletSet = new Set(walletItems.map((item) => item.address));
+  const shortlist = buildWalletMarketShortlist(marketItems).filter((item) => !walletSet.has(item.address));
+  let best = null;
+
+  for (let index = 0; index < shortlist.length; index += 1) {
+    const candidate = shortlist[index];
+    const upgraded = await buildBeamBestTeam([...walletItems, candidate], config);
+    const delta = upgraded.result.totalScore - baseEntry.result.totalScore;
+    if (!best || delta > best.delta || (delta === best.delta && candidate.salePriceValue < best.candidate.salePriceValue)) {
+      best = {
+        candidate,
+        before: baseEntry,
+        after: upgraded,
+        delta,
+        reasons: buildWalletUpgradeReasons(baseEntry, upgraded, candidate)
+      };
+    }
+    if (typeof onProgress === "function") {
+      onProgress(`Evaluating listed market upgrades ${index + 1}/${shortlist.length}...`, { step: index + 1, total: shortlist.length });
+    }
+    await sleep(0);
+  }
+
+  return best;
+}
+
+function renderWalletUpgrade(bestUpgrade) {
+  const root = document.getElementById("walletUpgradeCard");
+  const meta = document.getElementById("walletUpgradeMeta");
+  if (!bestUpgrade || !bestUpgrade.candidate || bestUpgrade.delta <= 0) {
+    root.innerHTML = `<div class="empty-state">No positive single-orc upgrade was found from the currently listed Cavern market items.</div>`;
+    meta.textContent = "No listed Cavern orc currently improves the wallet's best team.";
+    return;
+  }
+  const candidate = bestUpgrade.candidate;
+  meta.textContent = `Best listed upgrade: +${formatNumber(bestUpgrade.delta)} total PWR · upgraded team ${formatNumber(bestUpgrade.after.result.totalScore)} PWR`;
+  const reasonRows = bestUpgrade.reasons.map((reason) => `
+    <div class="mini-row">
+      <div>
+        <strong>${escapeHtml(reason)}</strong>
+        <span>Why this purchase improves the current wallet team.</span>
+      </div>
+    </div>
+  `).join("");
+  const synergyRows = bestUpgrade.after.result.synergyDetails.slice(0, 4).map((detail) => `
+    <div class="mini-row">
+      <div>
+        <strong>${escapeHtml(detail.trait)}</strong>
+        <span>${formatNumber(detail.count)} matches in the upgraded team.</span>
+      </div>
+      <strong>+${formatNumber(detail.bonus)}</strong>
+    </div>
+  `).join("");
+  root.innerHTML = `
+    <div class="wallet-upgrade-grid">
+      <div class="wallet-upgrade-main">
+        <img src="${escapeHtml(candidate.image)}" alt="${escapeHtml(candidate.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'">
+        <div class="orc-name" style="text-align:center">${escapeHtml(candidate.name)}</div>
+        <div class="orc-sub" style="text-align:center">${escapeHtml(candidate.emotion)} · listed now</div>
+        <div class="wallet-upgrade-price">${escapeHtml(formatTonPrice(candidate))}</div>
+        <div class="wallet-upgrade-market">${escapeHtml(candidate.saleMarket || "Getgems listing")}</div>
+        <div class="orc-stats" style="justify-content:center;margin-top:12px">
+          <span class="tag">+${formatNumber(bestUpgrade.delta)} PWR</span>
+          <span class="tag">Power ${formatNumber(candidate.power)}</span>
+          ${candidate.numberPower > 0 ? `<span class="tag">Number +${formatNumber(candidate.numberPower)}</span>` : ""}
+          ${candidate.localComboBonus > 0 ? `<span class="tag">Combo +${formatNumber(candidate.localComboBonus)}</span>` : ""}
+        </div>
+      </div>
+      <div class="wallet-upgrade-meta">
+        <div>
+          <div class="lbl">Why It Helps</div>
+          <div class="mini-list">${reasonRows}</div>
+        </div>
+        <div>
+          <div class="lbl">Upgraded Team Signals</div>
+          <div class="mini-list">${synergyRows || '<div class="empty-state">No visible synergy changes.</div>'}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function setActiveMode(mode) {
+  state.activeMode = mode;
+  document.querySelectorAll("[data-mode-tab]").forEach((button) => {
+    button.classList.toggle("active", button.getAttribute("data-mode-tab") === mode);
+  });
+  document.querySelectorAll(".mode-page").forEach((panel) => {
+    panel.classList.toggle("active", panel.id === `${mode}ModePanel`);
+  });
+  document.querySelectorAll("[data-mode-section]").forEach((section) => {
+    section.classList.toggle("active", section.getAttribute("data-mode-section") === mode);
+  });
+}
+
+async function runWalletAnalysis() {
+  if (state.walletRunning) {
+    return;
+  }
+  const button = document.getElementById("analyzeWalletBtn");
+  const walletAddress = String(getElementValue("walletInput", "")).trim();
+  if (!walletAddress) {
+    setWalletStatus("Enter a TON wallet address first.", "err", 100);
+    return;
+  }
+  state.walletRunning = true;
+  resetStatusProgress("walletStatus");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Analyzing...";
+  }
+  try {
+    const config = getWalletConfig();
+    setWalletStatus("Loading wallet Cavern orcs...", "warn", 0);
+    const walletRaw = await fetchWalletCavernItems(walletAddress, config, (message) => {
+      setWalletStatus(message, "warn", 18);
+    });
+    const walletItems = walletRaw.map((item) => normalizeItem(item, config)).filter((item) => item.matchesFocus);
+    setWalletStatus(`Loaded ${walletItems.length} owned Cavern orcs. Building current best team...`, "warn", 36);
+    const currentTeam = await buildBeamBestTeam(walletItems, config, (message, meta) => {
+      setWalletStatus(`Owned team: ${message}`, "warn", 36 + clamp(((meta?.step || 0) / (meta?.total || 7)) * 18, 0, 18));
+    });
+    setWalletStatus("Scanning live listed Cavern market orcs...", "warn", 60);
+    const marketRaw = await fetchListedWalletMarketItems(config, (message, meta) => {
+      const progress = 60 + clamp(((meta?.checkedCount || 0) / (meta?.totalCount || Math.max(meta?.checkedCount || 1, 1))) * 16, 0, 16);
+      setWalletStatus(message, "warn", progress);
+    });
+    const ownedSet = new Set(walletItems.map((item) => item.address));
+    const marketItems = marketRaw
+      .map((item) => normalizeItem(item, config))
+      .filter((item) => item.matchesFocus && !ownedSet.has(item.address) && item.salePriceValue > 0);
+    setWalletStatus(`Loaded ${marketItems.length} listed Cavern orcs. Evaluating best +1 upgrade...`, "warn", 78);
+    const bestUpgrade = await findBestWalletUpgrade(walletItems, marketItems, config, (message, meta) => {
+      setWalletStatus(message, "warn", 80 + clamp(((meta?.step || 0) / (meta?.total || 1)) * 18, 0, 18));
+    });
+    state.walletItems = walletItems;
+    state.walletMarketItems = marketItems;
+    state.walletCurrentTeam = currentTeam;
+    state.walletBestUpgrade = bestUpgrade;
+    renderWalletSummary(walletItems, currentTeam, marketItems, bestUpgrade);
+    renderWalletCurrentTeam(currentTeam);
+    renderWalletOwnedGrid(walletItems);
+    renderWalletUpgrade(bestUpgrade);
+    if (!walletItems.length) {
+      setWalletStatus("No Cavern orcs were found in this wallet.", "err", 100);
+      return;
+    }
+    setWalletStatus(`Done: loaded ${walletItems.length} owned Cavern orcs and checked ${marketItems.length} listed market candidates.`, "ok", 100);
+  } catch (error) {
+    console.error(error);
+    setWalletStatus(error.message || "Failed to analyze wallet.", "err", 100);
+  } finally {
+    state.walletRunning = false;
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Analyze Wallet";
+    }
+  }
+}
+
 async function runAnalysis() {
   if (state.isRunning) {
     return;
@@ -2055,6 +2611,14 @@ async function runAnalysis() {
 createParticles();
 window.addEventListener("load", () => {
   resetInitialViewport();
+  document.querySelectorAll("[data-mode-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const mode = button.getAttribute("data-mode-tab");
+      if (mode) {
+        setActiveMode(mode);
+      }
+    });
+  });
   const topTeamsGrid = document.getElementById("topTeamsGrid");
   if (topTeamsGrid) {
     topTeamsGrid.addEventListener("click", (event) => {
@@ -2092,6 +2656,23 @@ window.addEventListener("load", () => {
   if (startButton) {
     startButton.addEventListener("click", () => {
       runAnalysis();
+    });
+  }
+  const walletButton = document.getElementById("analyzeWalletBtn");
+  if (walletButton) {
+    walletButton.addEventListener("click", () => {
+      setActiveMode("wallet");
+      runWalletAnalysis();
+    });
+  }
+  const walletInput = document.getElementById("walletInput");
+  if (walletInput) {
+    walletInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setActiveMode("wallet");
+        runWalletAnalysis();
+      }
     });
   }
   requestAnimationFrame(() => {
