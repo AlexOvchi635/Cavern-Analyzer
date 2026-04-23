@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAVERN Orc Analyzer</title>
+<meta name="description" content="Cavern Orc Analyzer: live ZarGates orc scan, Skin Tone = Cavern filter, and top team ranking by power and synergies.">
+<style>
+:root{
+  --bg:#0f0f0f; --bg2:#141414; --bg3:#1a1a1a; --bg4:#111;
+  --g1:#797979; --g2:#878787; --g3:#919191; --g4:#9b9b9b;
+  --text:#e8e8e8; --dim:#444; --dim2:#6a6a6a;
+  --bd:rgba(145,145,145,.09); --bd2:rgba(145,145,145,.2);
+  --glow:rgba(145,145,145,.13); --gold:#c9a870; --green:#4db87a; --warn:#d28d54;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+button,input,textarea{font:inherit;}
+
+#pts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.pt{position:absolute;border-radius:50%;animation:rise linear infinite;opacity:0;}
+@keyframes rise{0%{transform:translateY(100vh);opacity:0;}10%{opacity:.18;}90%{opacity:.07;}100%{transform:translateY(-10px);opacity:0;}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 52px;background:rgba(8,8,8,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand img{height:30px;object-fit:contain;}
+.brand-txt{font-size:16px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#fff,var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-ul{display:flex;gap:30px;list-style:none;}
+.nav-ul a{color:var(--dim2);text-decoration:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:color .2s;}
+.nav-ul a:hover{color:var(--g4);}
+.nav-cta{background:linear-gradient(135deg,var(--g1),var(--g4));color:#fff;padding:9px 22px;border-radius:7px;font-size:10px;font-weight:700;letter-spacing:2px;text-decoration:none;text-transform:uppercase;transition:all .25s;box-shadow:0 0 18px var(--glow);}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 28px var(--glow);}
+
+.hr{height:1px;background:linear-gradient(90deg,transparent,var(--g1),transparent);opacity:.18;}
+section{padding:80px 52px;position:relative;z-index:1;}
+.wrap{max-width:1200px;margin:0 auto;}
+.lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g2);margin-bottom:10px;}
+.ttl{font-size:clamp(26px,3.8vw,42px);font-weight:900;line-height:1.08;margin-bottom:14px;}
+.ttl em{font-style:normal;background:linear-gradient(135deg,var(--g4),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.desc{font-size:14px;color:var(--dim2);line-height:1.88;max-width:760px;margin-bottom:36px;}
+
+.btn-m,.btn-o,.btn-s{
+  border:none;border-radius:8px;padding:14px 22px;font-size:11px;letter-spacing:1.6px;
+  text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;
+  justify-content:center;gap:8px;transition:all .25s;
+}
+.btn-m{background:linear-gradient(135deg,var(--g1),var(--g4));color:#fff;box-shadow:0 0 20px var(--glow);font-weight:700;}
+.btn-m:hover{transform:translateY(-2px);box-shadow:0 6px 32px var(--glow);}
+.btn-o{background:transparent;color:var(--dim2);border:1px solid var(--bd2);font-weight:600;}
+.btn-o:hover{border-color:var(--g3);color:var(--g3);}
+.btn-s{background:rgba(77,184,122,.12);border:1px solid rgba(77,184,122,.3);color:#b9eccd;font-weight:700;padding:10px 14px;}
+
+.hero{
+  min-height:74vh;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);align-items:start;
+  gap:28px;padding:92px 52px 8px;position:relative;overflow:hidden;
+}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 65% 42%,rgba(100,100,100,.07) 0%,transparent 65%),var(--bg);}
+.hero-bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(80,80,80,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(80,80,80,.03) 1px,transparent 1px);background-size:64px 64px;}
+.hero-content{position:relative;z-index:1;max-width:none;padding-left:8px;align-self:start;}
+.hero-lockup{display:inline-block;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(145,145,145,.06);border:1px solid var(--bd);padding:5px 14px;border-radius:20px;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim2);margin-bottom:28px;}
+.pulse{width:5px;height:5px;background:var(--g3);border-radius:50%;flex-shrink:0;animation:blink 2.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.1;}}
+h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line-height:.84;margin-bottom:14px;background:linear-gradient(150deg,#fff 0%,var(--g4) 55%,var(--g1) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 80px rgba(145,145,145,.18));}
+.hero-sub{
+  display:block;width:100%;text-align:center;font-size:16px;letter-spacing:5.8px;text-transform:uppercase;color:rgba(232,232,232,.62);
+  margin:0;line-height:1.2;text-shadow:0 0 24px rgba(145,145,145,.08);
+}
+.hero-h{font-size:19px;font-weight:700;line-height:1.55;margin-bottom:18px;max-width:620px;color:var(--text);}
+.hero-h span{color:var(--g3);}
+.hero-copy{font-size:14px;line-height:1.88;color:var(--dim2);max-width:660px;margin-bottom:30px;}
+.hero-visual{position:relative;z-index:1;width:100%;max-width:520px;justify-self:center;align-self:start;display:flex;align-items:center;justify-content:center;padding-top:6px;margin-top:-14px;}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(145,145,145,.07);}
+.r1{width:300px;height:300px;animation:rp 5s ease-in-out infinite;}
+.r2{width:400px;height:400px;animation:rp 5s ease-in-out infinite .9s;opacity:.5;}
+.r3{width:500px;height:500px;animation:rp 5s ease-in-out infinite 1.8s;opacity:.22;}
+@keyframes rp{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+.hero-img{width:min(100%,340px);height:auto;position:relative;z-index:1;filter:drop-shadow(0 0 60px rgba(120,120,120,.4));animation:fl 5s ease-in-out infinite;}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(-.7deg);}50%{transform:translateY(-14px) rotate(.7deg);}}
+.btns{display:flex;gap:12px;flex-wrap:wrap;}
+
+.sbar{display:flex;background:var(--bg2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);z-index:1;position:relative;margin-top:-52px;}
+.si{flex:1;padding:20px 14px;text-align:center;border-right:1px solid var(--bd);}
+.si:last-child{border-right:none;}
+.sv{font-size:22px;font-weight:900;display:block;margin-bottom:3px;background:linear-gradient(135deg,#fff,var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);}
+
+.control-grid,.metrics-grid,.content-grid,.traits-grid{display:grid;gap:16px;}
+.control-grid{grid-template-columns:1.35fr .95fr;}
+.metrics-grid{grid-template-columns:repeat(4,1fr);}
+.content-grid{grid-template-columns:1.12fr .88fr;}
+.traits-grid{grid-template-columns:1fr 1fr;}
+.panel{background:var(--bg3);border:1px solid var(--bd);border-radius:18px;padding:26px;position:relative;overflow:hidden;}
+.panel::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 28%);pointer-events:none;}
+.panel h3{font-size:18px;font-weight:900;margin-bottom:10px;}
+.panel p,.panel li{font-size:13px;color:var(--dim2);line-height:1.78;}
+.panel ul{list-style:none;display:grid;gap:8px;}
+.panel ul li{padding-left:18px;position:relative;}
+.panel ul li::before{content:'•';position:absolute;left:0;color:var(--g3);}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+.panel-head h3{margin:0;font-size:24px;letter-spacing:.4px;}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+.field{display:flex;flex-direction:column;gap:8px;}
+.field.full{grid-column:1 / -1;}
+.field label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);}
+.field input,.field textarea{
+  width:100%;background:var(--bg2);border:1px solid var(--bd2);border-radius:10px;padding:13px 14px;
+  font-size:13px;color:var(--text);outline:none;transition:border-color .2s;
+}
+.field textarea{min-height:78px;resize:vertical;}
+.field input:focus,.field textarea:focus{border-color:var(--g3);}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+.hint{margin-top:12px;font-size:12px;color:var(--dim);}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.status{
+  margin-top:16px;padding:12px 14px;border-radius:12px;background:var(--bg2);border:1px solid var(--bd);
+  color:var(--dim2);display:grid;gap:8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+}
+.status-title{
+  display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g3);
+}
+.status-text{
+  display:block;font-size:12px;line-height:1.5;color:#d6d6d6;min-height:18px;
+}
+.status-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:visible;position:relative;}
+.status-fill{
+  height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#474747 0%, #5f5f5f 20%, #7a7a7a 45%, #aaaaaa 72%, #e2e2e2 100%);
+  transition:width .55s cubic-bezier(.22,.61,.36,1),background .35s ease,opacity .35s ease;
+}
+.status-flag{
+  position:absolute;top:50%;left:0;transform:translate(-50%,-58%);transition:left .55s cubic-bezier(.22,.61,.36,1),opacity .35s ease;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+.status-flag img{display:block;width:28px;height:auto;}
+.status.ok{border-color:rgba(201,168,112,.18);color:#dadada;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015)),#1a1a1a;}
+.status.warn{border-color:rgba(145,145,145,.26);color:#d7d7d7;background:rgba(255,255,255,.035);}
+.status.err{border-color:rgba(194,98,98,.3);color:#f1c0c0;background:rgba(194,98,98,.08);}
+.status.ok .status-fill{background:linear-gradient(90deg,#565656 0%, #727272 22%, #a3a3a3 58%, #ececec 100%);}
+.status.err .status-fill{background:linear-gradient(90deg,#6f5858 0%, #915c5c 35%, #c26262 70%, #e08c8c 100%);}
+
+.metric{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:22px;}
+.metric .n{font-size:28px;font-weight:900;margin-bottom:6px;background:linear-gradient(135deg,#fff,var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.metric .k{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);margin-bottom:8px;}
+.metric .v{font-size:12px;color:var(--dim2);line-height:1.7;}
+
+.team-board{
+  background:
+    radial-gradient(circle at 18% 12%, rgba(201,168,112,.08), transparent 28%),
+    radial-gradient(circle at 82% 14%, rgba(145,145,145,.07), transparent 26%),
+    linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)),
+    #1d1d1d;
+  border:1px solid rgba(201,168,112,.18);border-radius:22px;padding:18px;
+  box-shadow:0 18px 52px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.03);margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+}
+.team-board::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.team-head{display:grid;gap:10px;margin-bottom:14px;}
+.team-title{font-size:22px;font-weight:900;color:#f1f1f1;}
+.team-sub{font-size:13px;color:#9b9b9b;}
+.team-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.team-pill{
+  padding:7px 11px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.08);color:#f3f3f3;background:rgba(255,255,255,.05);
+}
+.team-pill.green{background:rgba(77,184,122,.12);color:#c7ecd6;border-color:rgba(77,184,122,.28);}
+.team-pill.orange{background:rgba(201,168,112,.16);color:#f2dfba;border-color:rgba(201,168,112,.34);}
+.team-pill.violet{background:rgba(145,145,145,.14);color:#ededed;border-color:rgba(145,145,145,.28);}
+.team-pill.blue{background:rgba(255,255,255,.06);color:#e9e9e9;border-color:rgba(255,255,255,.12);}
+.team-pill.dark{background:rgba(0,0,0,.2);color:#d8d8d8;border-color:rgba(255,255,255,.1);}
+
+.team-slots{display:grid;grid-template-columns:repeat(7,minmax(155px,1fr));gap:10px;overflow-x:auto;padding-bottom:4px;align-items:stretch;}
+.slot{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.02),transparent),
+    radial-gradient(circle at 50% 6%, rgba(201,168,112,.06), transparent 30%),
+    #131313;
+  border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;min-width:155px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02), 0 10px 24px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;height:100%;
+}
+.slot-cover{
+  height:148px;background:radial-gradient(circle at 50% 14%,rgba(201,168,112,.08),transparent 44%),linear-gradient(180deg,#1d1d1d,#141414);display:flex;align-items:flex-end;justify-content:center;
+  border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;padding:8px;
+}
+.slot-cover::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 35%);}
+.slot-cover img{max-width:96%;max-height:100%;object-fit:contain;position:relative;z-index:1;filter:drop-shadow(0 6px 16px rgba(0,0,0,.42));}
+.slot-body{padding:10px 12px 12px;position:relative;display:flex;flex-direction:column;flex:1;}
+.slot-body::before{
+  content:'';position:absolute;top:0;left:12px;right:12px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,112,.22),transparent);
+}
+.slot-tag{font-size:10px;line-height:1.2;color:#b5b5b5;font-weight:800;margin-bottom:6px;text-align:center;}
+.slot-name{font-size:13px;font-weight:800;margin-bottom:6px;line-height:1.3;color:#f3f3f3;text-align:center;min-height:34px;}
+.slot-meta{font-size:12px;color:#d6d6d6;line-height:1.45;text-align:center;}
+.slot-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px;}
+.slot-pill{
+  padding:4px 8px;border-radius:999px;font-size:10px;font-weight:700;line-height:1;color:#f2f2f2;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);
+}
+.slot-pill.number{background:rgba(192,72,72,.18);border-color:rgba(192,72,72,.36);color:#ffd0d0;box-shadow:0 0 16px rgba(192,72,72,.18);}
+.slot-pill.logo{background:rgba(145,145,145,.14);border-color:rgba(145,145,145,.26);}
+.slot-pill.earring{background:rgba(201,168,112,.18);border-color:rgba(201,168,112,.3);color:#f2dfba;}
+.slot-pill.bracelet{background:rgba(77,184,122,.12);border-color:rgba(77,184,122,.24);color:#c7ecd6;}
+.slot-pill.combo{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.11);}
+.slot-score{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);text-align:center;min-height:52px;}
+.score-main{font-size:14px;font-weight:800;color:#e8e8e8;line-height:1.35;}
+.score-sub{font-size:11px;color:#c9a870;}
+.slot-breakdown{display:grid;gap:4px;margin-top:8px;}
+.slot-breakdown-line{font-size:10px;line-height:1.35;color:#bfbfbf;text-align:center;}
+.slot-action{
+  margin-top:auto;width:100%;border:none;border-radius:10px;padding:8px 10px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(104,91,231,.96),rgba(138,119,255,.94));
+  color:#fff;font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;
+  box-shadow:0 8px 18px rgba(95,81,227,.24);transition:transform .18s ease,box-shadow .18s ease;
+}
+.slot-action:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(95,81,227,.32);}
+.slot.empty .slot-name{color:var(--dim2);}
+.slot.empty .score-main{color:var(--dim);}
+
+.team-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.mini{
+  background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:16px;
+}
+.mini .mk{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);margin-bottom:8px;}
+.mini .mv{font-size:24px;font-weight:900;color:var(--text);}
+.mini .ms{margin-top:6px;font-size:12px;color:var(--dim2);line-height:1.7;}
+
+.variant-grid{display:grid;gap:18px;}
+.variant-total{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin:12px 0 18px;padding:14px 16px;border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015)),#1a1a1a;
+  border:1px solid rgba(201,168,112,.18);
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+.variant-total-label{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#bdbdbd;}
+.variant-total-value{font-size:28px;font-weight:900;line-height:1;color:#f3e0b8;}
+.variant-total-sub{font-size:12px;line-height:1.5;color:#969696;}
+.variant-card{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.015),transparent),
+    radial-gradient(circle at 50% 0%, rgba(201,168,112,.06), transparent 28%),
+    #171717;
+  border:1px solid rgba(201,168,112,.16);border-radius:20px;padding:10px;
+  box-shadow:0 18px 42px rgba(0,0,0,.26);
+  position:relative;
+  overflow:hidden;
+}
+.variant-card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.variant-card .team-board{background:transparent;border:none;box-shadow:none;margin:0;padding:0;}
+.variant-card .team-head{gap:8px;margin-bottom:10px;}
+.variant-titleline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.variant-rank{
+  font-size:14px;font-weight:900;line-height:1;color:#ececec;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:6px 9px;
+}
+.variant-title{font-size:30px;font-weight:900;color:#f0f0f0;line-height:1;}
+.variant-meta{font-size:14px;color:#a9a9a9;font-weight:600;}
+.variant-card .team-badges{gap:6px;}
+.variant-card .team-pill{padding:6px 10px;font-size:10px;border-radius:6px;}
+.variant-card .team-slots{grid-template-columns:repeat(7,minmax(135px,1fr));gap:8px;}
+.variant-card .slot{min-width:135px;border-radius:12px;}
+.variant-card .slot-cover{height:170px;padding:4px 4px 0;}
+.variant-card .slot-cover img{max-width:100%;max-height:100%;}
+.variant-card .slot-body{padding:8px 8px 10px;}
+.variant-card .slot-tag{font-size:11px;margin-bottom:4px;}
+.variant-card .slot-name{display:none;}
+.variant-card .slot-meta{font-size:24px;font-weight:900;color:#efe2bf;line-height:1.05;}
+.variant-card .slot-badges{margin-top:8px;}
+.variant-card .slot-pill{font-size:9px;padding:4px 7px;}
+.variant-card .slot-score{margin-top:8px;padding-top:8px;}
+.variant-card .score-main{font-size:13px;color:#ffffff;}
+.variant-card .score-sub{font-size:10px;color:#949494;}
+.variant-card .slot-breakdown{margin-top:8px;}
+.variant-card .slot-breakdown-line{font-size:9px;color:#b7b7b7;}
+
+.synergy-list,.trait-list,.emotion-list{display:grid;gap:10px;margin-top:14px;}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.pill{
+  padding:7px 10px;border-radius:999px;background:rgba(145,145,145,.08);border:1px solid var(--bd);
+  font-size:11px;color:var(--text);
+}
+.trait-item,.emotion-item,.synergy-item{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:12px 14px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;
+}
+.trait-item strong,.emotion-item strong,.synergy-item strong{font-size:13px;}
+.trait-item span,.emotion-item span,.synergy-item span{font-size:12px;color:var(--dim2);}
+
+.roster-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px;}
+.roster-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+.orc-card{
+  background:var(--bg3);border:1px solid var(--bd);border-radius:16px;overflow:hidden;transition:border-color .22s,transform .22s;
+}
+.orc-card:hover{border-color:var(--g2);transform:translateY(-3px);}
+.orc-cover{
+  height:200px;background:linear-gradient(180deg,var(--bg4),var(--bg2));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:1px solid var(--bd);
+}
+.orc-cover::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(90,90,90,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(90,90,90,.04) 1px,transparent 1px);background-size:32px 32px;}
+.orc-cover img{max-width:88%;max-height:88%;object-fit:contain;position:relative;z-index:1;filter:drop-shadow(0 4px 20px rgba(0,0,0,.5));}
+.orc-body{padding:16px;}
+.orc-name{font-size:15px;font-weight:800;margin-bottom:4px;}
+.orc-sub{font-size:12px;color:var(--dim2);margin-bottom:12px;}
+.orc-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.tag{
+  padding:6px 8px;border-radius:999px;background:rgba(145,145,145,.08);border:1px solid var(--bd);
+  font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text);
+}
+.attr-stack{display:grid;gap:8px;}
+.attr{
+  display:flex;justify-content:space-between;gap:12px;padding:9px 10px;border-radius:10px;background:var(--bg2);border:1px solid rgba(255,255,255,.03);
+}
+.attr b{font-size:12px;font-weight:700;color:var(--g3);}
+.attr span{font-size:12px;color:var(--dim2);text-align:right;}
+
+.footnote{
+  margin-top:16px;padding:14px 16px;background:rgba(145,145,145,.05);border:1px solid var(--bd);
+  border-radius:14px;font-size:12px;line-height:1.8;color:var(--dim2);
+}
+.muted{color:var(--dim);}
+.empty-state{
+  padding:30px;border:1px dashed var(--bd2);border-radius:16px;background:rgba(255,255,255,.015);
+  color:var(--dim2);font-size:13px;line-height:1.8;
+}
+.item-modal{
+  position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgba(4,4,6,.76);backdrop-filter:blur(10px);
+}
+.item-modal.open{display:flex;}
+.item-modal-card{
+  width:min(980px,100%);max-height:min(92vh,980px);overflow:auto;border-radius:22px;
+  background:linear-gradient(180deg,#253045,#202939);border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 28px 80px rgba(0,0,0,.42);padding:22px 22px 20px;
+}
+.item-modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px;}
+.item-modal-title{font-size:30px;font-weight:900;line-height:1.1;color:#6d63ff;}
+.item-modal-sub{margin-top:8px;font-size:13px;color:#b9c1cf;line-height:1.5;}
+.item-modal-close{
+  border:none;background:rgba(255,255,255,.08);color:#f0f0f0;border-radius:12px;padding:10px 14px;cursor:pointer;
+  font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+}
+.item-modal-top{display:grid;grid-template-columns:minmax(240px,280px) 1fr;gap:20px;align-items:start;}
+.item-hero{
+  background:#1d2738;border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:14px;
+  display:grid;justify-items:center;gap:10px;
+}
+.item-hero img{width:min(100%,220px);height:auto;object-fit:contain;filter:drop-shadow(0 10px 24px rgba(0,0,0,.32));}
+.item-hero-number{font-size:23px;font-weight:900;color:#ffd7a2;}
+.item-hero-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.item-modal-sections{display:grid;gap:14px;}
+.item-section{
+  border-top:1px solid rgba(255,255,255,.14);padding-top:12px;
+}
+.item-section-title{font-size:12px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:#7d83ff;margin-bottom:10px;}
+.item-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;
+  padding:12px 0;border-top:1px solid rgba(255,255,255,.11);
+}
+.item-row:first-of-type{border-top:none;padding-top:0;}
+.item-row-main{font-size:14px;font-weight:800;color:#f4f5f7;line-height:1.45;}
+.item-row-sub{margin-top:4px;font-size:12px;line-height:1.5;color:#b6becc;}
+.item-row-score{font-size:15px;font-weight:900;color:#ffd7a2;white-space:nowrap;}
+.item-modal-footer{display:flex;justify-content:flex-end;margin-top:18px;}
+.item-modal-footer .item-modal-close{min-width:160px;}
+
+@media (max-width:1100px){
+  .hero-visual{display:none;}
+  .hero{grid-template-columns:1fr;}
+  .control-grid,.content-grid,.traits-grid{grid-template-columns:1fr;}
+  .metrics-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:780px){
+  nav{padding:12px 20px;}
+  .nav-ul{display:none;}
+  section{padding:56px 20px;}
+  .hero{padding:82px 20px 8px;min-height:64vh;grid-template-columns:1fr;}
+  .sbar{flex-wrap:wrap;}
+  .si{min-width:50%;border-bottom:1px solid var(--bd);}
+  .team-slots{grid-template-columns:repeat(7,minmax(150px,1fr));}
+  .team-summary{grid-template-columns:1fr;}
+  .metrics-grid{grid-template-columns:1fr;}
+  .field-grid{grid-template-columns:1fr;}
+  .item-modal{padding:14px;}
+  .item-modal-card{padding:18px 16px 16px;}
+  .item-modal-top{grid-template-columns:1fr;}
+  .item-modal-title{font-size:24px;}
+}
+</style>
+</head>
+<body>
+<div id="pts"></div>
+
+<nav>
+  <a href="#" class="brand">
+    <img src="c-logo-nobg.png" alt="Cavern" onerror="this.style.display='none'">
+    <span class="brand-txt">CAVERN</span>
+  </a>
+  <a href="#workspace" class="nav-cta">Analyze Orcs</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag"><span class="pulse"></span>Live Data · Getgems collection · Cavern filter</div>
+    <div class="hero-lockup">
+      <h1 class="ht">CAVERN</h1>
+      <div class="hero-sub">Orc Analyzer · Power + Synergy Engine</div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+    <img src="c-banner.png" class="hero-img" alt="Cavern" onerror="this.src='c-logo-nobg.png'">
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<div class="sbar">
+  <div class="si"><span class="sv">Live</span><span class="sl">Data Source</span></div>
+  <div class="si"><span class="sv">PWR</span><span class="sl">Power + Synergy Score</span></div>
+  <div class="si"><span class="sv">Cavern</span><span class="sl">Skin Tone Filter</span></div>
+</div>
+
+<div class="hr"></div>
+
+<section id="workspace">
+  <div class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Analyzer</h3>
+      </div>
+      <input id="collectionInput" class="sr-only" value="https://getgems.io/unstoppabletribe?filter=%7B%22attributes%22%3A%7B%22Skin+Tone%22%3A%5B%22Cavern%22%5D%7D%7D">
+
+      <div class="status" id="loadStatus">
+        <div class="status-title">Current Step</div>
+        <div class="status-text">Ready to start.</div>
+        <div class="status-bar">
+          <div class="status-fill"></div>
+          <div class="status-flag"><img src="c-logo-nobg.png" alt="Cavern"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="top-teams">
+  <div class="wrap">
+    <div class="lbl">Top Variants</div>
+    <div class="ttl">Top <em>10 Teams</em> by Power and Synergies</div>
+    <div class="variant-total" id="topTeamsTotal">
+      <div>
+        <div class="variant-total-label">Total Power Across Top 10</div>
+        <div class="variant-total-value">0 PWR</div>
+      </div>
+      <div class="variant-total-sub">Combined total score of all ranked teams.</div>
+    </div>
+    <div class="variant-grid" id="topTeamsGrid">
+      <div class="empty-state">After the scan, the 10 strongest unique Cavern teams will appear here.</div>
+    </div>
+  </div>
+</section>
+
+<div class="item-modal" id="itemModal" aria-hidden="true">
+  <div class="item-modal-card" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+    <div class="item-modal-head">
+      <div>
+        <div class="item-modal-title" id="itemModalTitle">Orc details</div>
+        <div class="item-modal-sub" id="itemModalSub">Synergy breakdown</div>
+      </div>
+      <button class="item-modal-close" type="button" data-close-item-modal>Close</button>
+    </div>
+    <div id="itemModalBody"></div>
+    <div class="item-modal-footer">
+      <button class="item-modal-close" type="button" data-close-item-modal>Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="hr"></div>
+
+<script>
+const EMOTIONS = ["In Love", "Greeting", "Capped", "Shoked", "Do Something", "To The Moon", "Wen TGE"];
+const KNOWN_GETGEMS_COLLECTIONS = {
+  unstoppabletribe: "EQBGNoXXfQR07HdDhtkmIu1ojTTwcjB0EhHYOMSH3P7sZGJR"
+};
+const ATTRIBUTE_POWER_TABLES = {
+  "skin tone": {
+    golden: 50, lunar: 50, cosmic: 50, demonic: 50,
+    cavern: 20, desert: 20, fairytale: 20, martian: 20, magical: 20, silver: 20,
+    forest: 10, urban: 10, beach: 10, mountain: 10, meadow: 10, swamp: 10, tropical: 10, taiga: 10
+  },
+  stick: {
+    "traffic police baton": 500, "wc sign": 50, "stop sign": 50, bat: 50, "golf club": 50, guitar: 50,
+    staff: 20, "giant fork": 20, spine: 20, tentacle: 20, rail: 20, spear: 20, crowbar: 20, oar: 20,
+    chair: 10, branch: 10, mop: 10, pipe: 10
+  },
+  earrings: {
+    gold: 50, "spiked gold": 50, emerald: 50, ruby: 50, diamond: 50, demonic: 50, "dragon teeth": 50, "no earrings": 50,
+    "spiked silver": 20, silver: 20, "phoenix feathers": 20, "magic mushrooms": 20,
+    "fly agaric": 10, wooden: 10, "spiked wooden": 10, bones: 10, "mechanic's nuts": 10, toadstools: 10
+  },
+  armor: {
+    "breastplate of the dead": 50, dragon: 50, ruby: 50,
+    cyber: 20, spiked: 20, phoenix: 20, sea: 20, martian: 20, fairytale: 20, magical: 20,
+    leather: 10, "turtle shell": 10, iron: 10, forest: 10, wooden: 10, paper: 10, mountain: 10, tropical: 10
+  },
+  heart: {
+    zargates: 500, ton: 50, telegram: 50, bitcoin: 50, "tribo games": 50, lunar: 50, ruby: 50,
+    rub: 20, eth: 20, dollar: 20, "pure silver": 20, silver: 20, sea: 20, phoenix: 20,
+    elephant: 10, red: 10, stone: 10, chocolate: 10
+  },
+  ring: {
+    zargates: 500, "golden bitcoin": 50, ton: 50, telegram: 50, "tribo games": 50, emerald: 50, lunar: 50, diamond: 50,
+    eth: 20, rub: 20, dollar: 20, silver: 20, "spiked silver": 20,
+    elephant: 10, wooden: 10, "fake gold": 10, "mechanic's gear": 10, stone: 10
+  },
+  cap: {
+    zargates: 500, bitcoin: 50, ton: 50, telegram: 50, "cosmic black": 50, "demonic red": 50, gold: 50, maga: 50,
+    eth: 20, rub: 20, dollar: 20, "desert white": 20, phoenix: 20, "sea blue": 20, "cavern brown": 20,
+    elephant: 10, "mountain blue": 10, "forest green": 10
+  },
+  glasses: {
+    "zargates business": 1000, zargates: 500, bitcoin: 50, gold: 50, "professor ton": 50, cosmic: 50, demonic: 50,
+    "tribo games": 50, telegram: 50,
+    phoenix: 20, fairytale: 20, cyber: 20, sea: 20, desert: 20, martian: 20,
+    steampunk: 10, mountain: 10, tropical: 10
+  },
+  cup: {
+    zargates: 500, "demonic wine": 50, "cosmic cocktail": 50, "lunar cocktail": 50, latte: 50,
+    "mystic smoothie": 20, "unicorn milk": 20, "fairytale champagne": 20, "martian cola": 20, "cyber tonic": 20,
+    "forest beer": 10, "mushroom juice": 10, "taiga tincture": 10, "swamp cocktail": 10, "protein shake": 10,
+    "mechanic's cocktail": 10, "tropical cocktail": 10, "chocolate shake": 10
+  },
+  bracelet: {
+    "runed gold": 50, "spiked gold": 50, "spiked cosmic": 50, "spiked demonic": 50, "spiked lunar": 50, "gold braid": 50,
+    "runed silver": 20, "spiked silver": 20, "spiked stone": 20, "spiked mechanical": 20, "fairytale beads": 20,
+    rope: 10, mechanical: 10, wooden: 10, bone: 10, stone: 10, paper: 10, tropical: 10
+  },
+  "pendant chain": {
+    zargates: 500, bitcoin: 50, telegram: 50, ton: 50, demonic: 50, "tribo games": 50, gold: 50, "gold rope": 50, lunar: 50,
+    dollar: 20, eth: 20, rub: 20, silver: 20, phoenix: 20, fairytale: 20, magical: 20,
+    elephant: 10, rope: 10
+  },
+  hamster: {
+    zargates: 500, "lunar blue": 50, gold: 50, "demonic red": 50, "cosmic black": 50, "tribo games": 50, bitcoin: 50, telegram: 50, ton: 50,
+    "cavern brown": 20, "desert white": 20, dollar: 20, eth: 20, rub: 20,
+    elephant: 10, "forest green": 10, "mountain blue": 10, "meadow yellow": 10
+  },
+  sign: {
+    "grandma's wallpaper": 500, "burnt paper": 50, paper: 50, "vintage wallpaper": 50, cardboard: 50,
+    "torn cardboard": 20, glass: 20, granite: 20, "concrete block": 20, "copper plate": 20, styrofoam: 20,
+    "new brick wall chunk": 20, "aerated concrete block": 20, metal: 20,
+    "old brick wall chunk": 10, "stone slab": 10, "ripped-off plank": 10, "ripped-off fence": 10
+  }
+};
+const STICKER_NUMBER_POWER = {
+  0: 1000, 1: 1000, 2: 1000, 3: 1000, 4: 1000, 5: 1000, 6: 1000, 7: 1000, 8: 1000, 9: 1000,
+  11: 500, 22: 500, 33: 500, 44: 500, 55: 500, 66: 500, 77: 500, 88: 500, 99: 500,
+  111: 500, 222: 500, 333: 500, 444: 500, 555: 500, 666: 500, 777: 500, 888: 500, 999: 500,
+  1111: 500, 2222: 500, 3333: 500, 4444: 500, 5555: 500, 6666: 500, 7777: 500, 8888: 500, 9999: 500,
+  11111: 5000
+};
+// Local attribute synergy inside one orc:
+// - Skin Tone never counts
+// - 2 matched attributes => +100
+// - 3 or more matched attributes => +300
+// - at least one normalized word/root must match between attribute values
+// - special cases from the rule sheet include Wallpaper -> Paper
+// - Fake Gold must never match Gold
+const ITEM_COMBO_BONUS = { 2: 100, 3: 300 };
+const EARRING_TEAM_BONUS = { 4: 400, 5: 500, 6: 700, 7: 1000 };
+const BRACELET_TEAM_BONUS = { 4: 400 };
+const LOGO_TEAM_BONUS = { 4: 400, 5: 500, 6: 700, 7: 1000 };
+const FULL_TEAM_BONUS_PER_ORC = 50;
+const TEAM_LOGO_KEYS = new Set([
+  "zargates", "bitcoin", "telegram", "ton", "tribo games", "dollar", "eth", "rub", "elephant"
+]);
+const state = {
+  items: [],
+  filtered: [],
+  topTeams: [],
+  sortMode: "strongest",
+  lastRun: null
+};
+
+function norm(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/\s+/g, " ");
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatNumber(value) {
+  return new Intl.NumberFormat("ru-RU").format(Number(value || 0));
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function createParticles() {
+  const root = document.getElementById("pts");
+  for (let i = 0; i < 44; i += 1) {
+    const el = document.createElement("div");
+    el.className = "pt";
+    const size = Math.random() * 4 + 1;
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+    el.style.left = Math.random() * 100 + "%";
+    el.style.bottom = "-10px";
+    el.style.background = `rgba(145,145,145,${Math.random() * 0.45 + 0.08})`;
+    el.style.animationDuration = Math.random() * 12 + 12 + "s";
+    el.style.animationDelay = Math.random() * 10 + "s";
+    root.appendChild(el);
+  }
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function setStatus(message, kind = "", progress = null) {
+  const status = document.getElementById("loadStatus");
+  const text = status.querySelector(".status-text");
+  const fill = status.querySelector(".status-fill");
+  const flag = status.querySelector(".status-flag");
+  const requestedProgress = progress === null ? (kind === "ok" || kind === "err" ? 100 : 0) : clamp(Number(progress) || 0, 0, 100);
+  const previousProgress = Number(status.dataset.progress || 0);
+  const safeProgress = requestedProgress <= 0
+    ? 0
+    : Math.max(previousProgress, requestedProgress);
+  status.className = "status" + (kind ? " " + kind : "");
+  status.dataset.progress = String(safeProgress);
+  if (text) {
+    text.textContent = message;
+  }
+  if (fill) {
+    fill.style.width = `${safeProgress}%`;
+  }
+  if (flag) {
+    flag.style.left = `${safeProgress}%`;
+    flag.style.opacity = safeProgress <= 0 ? "0" : "1";
+  }
+}
+
+function getElementValue(id, fallback = "") {
+  const element = document.getElementById(id);
+  if (!element) {
+    return fallback;
+  }
+  return element.value;
+}
+
+function getConfig() {
+  return {
+    collectionInput: String(getElementValue("collectionInput", "https://getgems.io/unstoppabletribe?filter=%7B%22attributes%22%3A%7B%22Skin+Tone%22%3A%5B%22Cavern%22%5D%7D%7D")).trim(),
+    traitType: String(getElementValue("traitTypeInput", "Skin Tone")).trim(),
+    traitValue: String(getElementValue("traitValueInput", "Cavern")).trim(),
+    searchWidth: Math.max(50, Math.min(500, Number(getElementValue("candidateCapInput", 180) || 180))),
+    pageLimit: Math.max(25, Math.min(200, Number(getElementValue("pageLimitInput", 200) || 200))),
+    fallbackPower: Math.max(0, Number(getElementValue("fallbackPowerInput", 0) || 0)),
+    sameTribeBonus: FULL_TEAM_BONUS_PER_ORC,
+    focusBonus: Math.max(0, Number(getElementValue("focusBonusInput", 0) || 0))
+  };
+}
+
+async function parseCollectionAddress(rawInput) {
+  const raw = rawInput.trim();
+  if (!raw) {
+    throw new Error("Нужен адрес коллекции или Getgems-ссылка.");
+  }
+
+  if (/^(EQ|UQ|kQ|0:)[A-Za-z0-9_-]+$/.test(raw)) {
+    return raw;
+  }
+
+  try {
+    const url = new URL(raw);
+    const parts = url.pathname.split("/").filter(Boolean);
+    const collectionIndex = parts.indexOf("collection");
+    if (collectionIndex !== -1 && parts[collectionIndex + 1]) {
+      return decodeURIComponent(parts[collectionIndex + 1]);
+    }
+
+    if (/getgems\.io$/i.test(url.hostname)) {
+      const slug = parts[0] ? decodeURIComponent(parts[0]).toLowerCase() : "";
+      if (slug && KNOWN_GETGEMS_COLLECTIONS[slug]) {
+        return KNOWN_GETGEMS_COLLECTIONS[slug];
+      }
+    }
+  } catch (error) {
+    /* noop */
+  }
+
+  throw new Error("Не смог распознать адрес коллекции. Сейчас поддерживаются EQ..., getgems collection URL и slug `unstoppabletribe`.");
+}
+
+function getImage(item) {
+  const previews = Array.isArray(item.previews) ? item.previews : [];
+  const preferred = previews.find((preview) => preview.resolution === "500x500")
+    || previews.find((preview) => preview.resolution === "100x100")
+    || previews[0];
+  return preferred?.url || item.metadata?.image || "c-logo-nobg.png";
+}
+
+function extractEmotion(name) {
+  const lower = norm(name);
+  return EMOTIONS.find((emotion) => lower.includes(norm(emotion))) || "Unknown";
+}
+
+function extractNumber(name) {
+  const match = String(name || "").match(/#(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function getAttributePower(traitType, value, fallbackPower) {
+  const table = ATTRIBUTE_POWER_TABLES[norm(traitType)];
+  const exact = table ? table[norm(value)] : undefined;
+  return exact ?? fallbackPower;
+}
+
+function getStickerNumberPower(number) {
+  if (number === null || number === undefined) {
+    return 0;
+  }
+  return STICKER_NUMBER_POWER[number] || 0;
+}
+
+function getValueTokens(value) {
+  const text = norm(value);
+  const tokens = new Set();
+
+  // Fake Gold is explicitly excluded from Gold synergy.
+  if (!text.includes("fake gold") && /\bgold(?:en)?\b/.test(text)) tokens.add("gold");
+  if (/\bsilver\b/.test(text)) tokens.add("silver");
+  if (/\bspiked?\b/.test(text)) tokens.add("spiked");
+  if (/\brope\b/.test(text)) tokens.add("rope");
+  if (/\bmechanic(?:al)?\b/.test(text) || /\bmechanic's\b/.test(text)) tokens.add("mechanical");
+  if (/\bmagic\b/.test(text) || /\bmagical\b/.test(text)) tokens.add("magic");
+  if (/\bmushroom(?:s)?\b/.test(text) || /\btoadstool(?:s)?\b/.test(text) || text.includes("fly agaric")) tokens.add("mushroom");
+  // Rule-sheet special cases: Vintage Wallpaper + Paper and Grandma's Wallpaper + Paper.
+  if (/\bpaper\b/.test(text) || /\bwallpaper\b/.test(text)) tokens.add("paper");
+
+  [
+    "zargates", "telegram", "bitcoin", "tribo games", "lunar", "demonic", "cosmic", "phoenix",
+    "fairytale", "martian", "desert", "cavern", "sea", "forest", "mountain", "tropical",
+    "elephant", "ruby", "diamond", "emerald", "cyber", "magical", "dollar", "eth", "rub"
+  ].forEach((token) => {
+    if (text.includes(token)) {
+      tokens.add(token);
+    }
+  });
+
+  if (text.includes("professor ton") || /\bton\b/.test(text)) tokens.add("ton");
+  return tokens;
+}
+
+function getLogoKey(value) {
+  const text = norm(value);
+  if (text === "zargates" || text === "zargates business") return "zargates";
+  if (text === "bitcoin") return "bitcoin";
+  if (text === "telegram") return "telegram";
+  if (text === "ton" || text === "professor ton") return "ton";
+  if (text === "tribo games") return "tribo games";
+  if (text === "dollar") return "dollar";
+  if (text === "eth") return "eth";
+  if (text === "rub") return "rub";
+  if (text === "elephant") return "elephant";
+  return null;
+}
+
+function getLogoMatches(attributes) {
+  const logos = [];
+  for (const attr of attributes) {
+    if (norm(attr.trait_type) === "skin tone") {
+      continue;
+    }
+    const logoKey = getLogoKey(attr.value);
+    if (logoKey && TEAM_LOGO_KEYS.has(logoKey)) {
+      logos.push({
+        token: logoKey,
+        traitType: attr.trait_type,
+        value: attr.value
+      });
+    }
+  }
+  return logos;
+}
+
+function buildLocalAttributeCombo(attributes) {
+  // Build the largest connected local combo group where each attribute shares
+  // at least one normalized word/root with another attribute in the same orc.
+  const relevant = attributes
+    .filter((attr) => norm(attr.trait_type) !== "skin tone")
+    .map((attr) => ({
+      label: `${attr.trait_type}: ${attr.value}`,
+      tokens: [...getValueTokens(attr.value)]
+    }))
+    .filter((attr) => attr.tokens.length);
+
+  let bestLabels = [];
+  let bestTokens = [];
+  let bestSize = 1;
+
+  for (let i = 0; i < relevant.length; i += 1) {
+    const seen = new Set([i]);
+    const queue = [i];
+    while (queue.length) {
+      const current = queue.shift();
+      for (let j = 0; j < relevant.length; j += 1) {
+        if (seen.has(j)) {
+          continue;
+        }
+        const intersects = relevant[current].tokens.some((token) => relevant[j].tokens.includes(token));
+        if (intersects) {
+          seen.add(j);
+          queue.push(j);
+        }
+      }
+    }
+    if (seen.size > bestSize) {
+      bestSize = seen.size;
+      bestLabels = [...seen].map((index) => relevant[index].label);
+      const tokenCounts = new Map();
+      [...seen].forEach((index) => {
+        relevant[index].tokens.forEach((token) => {
+          tokenCounts.set(token, (tokenCounts.get(token) || 0) + 1);
+        });
+      });
+      bestTokens = [...tokenCounts.entries()]
+        .filter(([, count]) => count >= 2)
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ru"))
+        .map(([token]) => token);
+    }
+  }
+
+  const effectiveSize = bestSize >= 3 ? 3 : bestSize;
+  return {
+    size: bestSize,
+    bonus: ITEM_COMBO_BONUS[effectiveSize] || 0,
+    labels: bestLabels,
+    tokens: bestTokens
+  };
+}
+
+function getLocalComboSummary(item) {
+  if (!item.localComboBonus) {
+    return null;
+  }
+  const tokenLabel = item.localComboTokens && item.localComboTokens.length
+    ? item.localComboTokens.map((token) => formatTokenLabel(token)).join(", ")
+    : "Shared words";
+  const sourceLabel = item.localComboLabels && item.localComboLabels.length
+    ? item.localComboLabels.join(" / ")
+    : "";
+  return {
+    tokenLabel,
+    sourceLabel
+  };
+}
+
+function getItemModalSections(item, signals) {
+  const attributeRows = item.attributeBreakdown.map((attr) => ({
+    title: `${attr.trait_type}`,
+    subtitle: attr.value,
+    bonus: attr.power
+  }));
+  const internalRows = [];
+  const teamRows = [];
+  const combo = getLocalComboSummary(item);
+  const earring = getAttributeValue(item, "Earrings");
+  const bracelet = getAttributeValue(item, "Bracelet");
+
+  if (combo) {
+    internalRows.push({
+      title: `Attributes Synergy: ${combo.tokenLabel}`,
+      subtitle: combo.sourceLabel || "Matched words between this orc's attributes.",
+      bonus: item.localComboBonus
+    });
+  }
+  if (item.numberPower > 0) {
+    internalRows.push({
+      title: `Number Power`,
+      subtitle: `Sticker #${item.number ?? "?"}`,
+      bonus: item.numberPower
+    });
+  }
+  if (earring) {
+    const earringSync = signals.earrings.get(norm(earring));
+    if (earringSync) {
+      teamRows.push({
+        title: `Team Earring`,
+        subtitle: `${earringSync.value} x${earringSync.count}`,
+        bonus: earringSync.bonus
+      });
+    }
+  }
+  if (bracelet) {
+    const braceletSync = signals.bracelets.get(norm(bracelet));
+    if (braceletSync) {
+      teamRows.push({
+        title: `Team Bracelet`,
+        subtitle: `${braceletSync.value} x${braceletSync.count}`,
+        bonus: braceletSync.bonus
+      });
+    }
+  }
+  const logoGroups = new Map();
+  for (const match of item.logoMatches) {
+    const logoSync = signals.logos.get(match.token);
+    if (!logoSync) {
+      continue;
+    }
+    const current = logoGroups.get(match.token) || { sync: logoSync, attrs: [] };
+    current.attrs.push(`${match.traitType}: ${match.value}`);
+    logoGroups.set(match.token, current);
+  }
+  for (const { sync, attrs } of logoGroups.values()) {
+    teamRows.push({
+      title: `Team Logo`,
+      subtitle: `${formatTokenLabel(sync.token)} x${sync.count} · ${attrs.join(" / ")}`,
+      bonus: sync.bonus
+    });
+  }
+
+  return {
+    attributeRows,
+    internalRows,
+    teamRows
+  };
+}
+
+function renderItemModalRows(rows) {
+  if (!rows.length) {
+    return `<div class="item-row"><div><div class="item-row-main">No active entries</div><div class="item-row-sub">Nothing extra is active for this section.</div></div><div class="item-row-score">0 PWR</div></div>`;
+  }
+  return rows.map((row) => `
+    <div class="item-row">
+      <div>
+        <div class="item-row-main">${escapeHtml(row.title)}</div>
+        <div class="item-row-sub">${escapeHtml(row.subtitle)}</div>
+      </div>
+      <div class="item-row-score">${formatNumber(row.bonus)} PWR</div>
+    </div>
+  `).join("");
+}
+
+function openItemModal(item, teamSignals) {
+  const modal = document.getElementById("itemModal");
+  const body = document.getElementById("itemModalBody");
+  const title = document.getElementById("itemModalTitle");
+  const sub = document.getElementById("itemModalSub");
+  if (!modal || !body || !title || !sub || !item) {
+    return;
+  }
+
+  const sections = getItemModalSections(item, teamSignals);
+  title.textContent = item.name;
+  sub.textContent = `${item.emotion} · ${formatNumber(item.power)} PWR`;
+  body.innerHTML = `
+    <div class="item-modal-top">
+      <div class="item-hero">
+        <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'">
+        <div class="item-hero-number">#${escapeHtml(item.number ?? "?")} · ${formatNumber(item.power)} PWR</div>
+        <div class="item-hero-tags">
+          <span class="slot-pill">${escapeHtml(item.emotion)}</span>
+          ${item.localComboBonus > 0 ? `<span class="slot-pill combo">Synergy</span>` : ""}
+          ${item.numberPower > 0 ? `<span class="slot-pill number">Number</span>` : ""}
+        </div>
+      </div>
+      <div class="item-modal-sections">
+        <div class="item-section">
+          <div class="item-section-title">Attributes Synergy</div>
+          ${renderItemModalRows(sections.internalRows)}
+        </div>
+        <div class="item-section">
+          <div class="item-section-title">Team Synergy</div>
+          ${renderItemModalRows(sections.teamRows)}
+        </div>
+        <div class="item-section">
+          <div class="item-section-title">Attributes</div>
+          ${renderItemModalRows(sections.attributeRows)}
+        </div>
+      </div>
+    </div>
+  `;
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeItemModal() {
+  const modal = document.getElementById("itemModal");
+  if (!modal) {
+    return;
+  }
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function getTierBonus(count, table) {
+  return Object.keys(table)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .reduce((bonus, threshold) => (count >= threshold ? table[threshold] : bonus), 0);
+}
+
+function formatTokenLabel(token) {
+  if (token === "tribo games") {
+    return "Tribo Games";
+  }
+  if (token === "eth") {
+    return "ETH";
+  }
+  if (token === "rub") {
+    return "RUB";
+  }
+  if (token === "ton") {
+    return "TON";
+  }
+  if (token === "zargates") {
+    return "ZarGates";
+  }
+  if (token === "tribo games") {
+    return "Tribo Games";
+  }
+  return token.split(" ").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+}
+
+function getFetchProgress(checkedCount, totalCount) {
+  if (!totalCount || totalCount <= 0) {
+    return 0;
+  }
+  return clamp((checkedCount / totalCount) * 72, 0, 72);
+}
+
+function getBuildProgress(step, total) {
+  if (!total) {
+    return 78;
+  }
+  return clamp(76 + (step / total) * 22, 76, 98);
+}
+
+function resetInitialViewport() {
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+  if (window.location.hash) {
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+  }
+  window.scrollTo(0, 0);
+}
+
+function rawItemMatchesFocus(rawItem, config) {
+  const attributes = Array.isArray(rawItem?.metadata?.attributes) ? rawItem.metadata.attributes : [];
+  const targetTrait = norm(config.traitType);
+  const targetValue = norm(config.traitValue);
+  return attributes.some((attr) =>
+    attr
+    && attr.trait_type !== undefined
+    && attr.value !== undefined
+    && norm(attr.trait_type) === targetTrait
+    && norm(attr.value) === targetValue
+  );
+}
+
+function getAttributeValue(item, traitType) {
+  return item.attributes.find((entry) => norm(entry.trait_type) === norm(traitType))?.value || null;
+}
+
+function computeTeamSignals(team) {
+  const realTeam = team.filter(Boolean);
+  const active = {
+    fullCavern: realTeam.length === EMOTIONS.length && realTeam.every((item) => item.matchesFocus),
+    earrings: new Map(),
+    bracelets: new Map(),
+    logos: new Map()
+  };
+  const earringCounts = new Map();
+  const braceletCounts = new Map();
+  const logoCounts = new Map();
+
+  for (const item of realTeam) {
+    const earring = getAttributeValue(item, "Earrings");
+    const bracelet = getAttributeValue(item, "Bracelet");
+    if (earring) {
+      const key = norm(earring);
+      earringCounts.set(key, { count: (earringCounts.get(key)?.count || 0) + 1, value: earring });
+    }
+    if (bracelet) {
+      const key = norm(bracelet);
+      braceletCounts.set(key, { count: (braceletCounts.get(key)?.count || 0) + 1, value: bracelet });
+    }
+    for (const match of item.logoMatches) {
+      const current = logoCounts.get(match.token) || { count: 0, attrs: [] };
+      current.count += 1;
+      current.attrs.push(`${match.traitType}: ${match.value}`);
+      logoCounts.set(match.token, current);
+    }
+  }
+
+  for (const [key, data] of earringCounts.entries()) {
+    const bonus = getTierBonus(data.count, EARRING_TEAM_BONUS);
+    if (bonus > 0) {
+      active.earrings.set(key, { value: data.value, count: data.count, bonus });
+    }
+  }
+  for (const [key, data] of braceletCounts.entries()) {
+    const bonus = getTierBonus(data.count, BRACELET_TEAM_BONUS);
+    if (bonus > 0) {
+      active.bracelets.set(key, { value: data.value, count: data.count, bonus });
+    }
+  }
+  for (const [token, data] of logoCounts.entries()) {
+    const bonus = getTierBonus(data.count, LOGO_TEAM_BONUS);
+    if (bonus > 0) {
+      active.logos.set(token, { token, count: data.count, bonus, attrs: data.attrs });
+    }
+  }
+
+  return active;
+}
+
+function getItemTeamBadges(item, signals) {
+  const badges = [];
+  const earring = getAttributeValue(item, "Earrings");
+  const bracelet = getAttributeValue(item, "Bracelet");
+
+  if (item.numberPower > 0) {
+    badges.push({ label: "Number", kind: "number" });
+  }
+  if (item.localComboBonus > 0) {
+    badges.push({ label: "Combo", kind: "combo" });
+  }
+  if (earring && signals.earrings.has(norm(earring))) {
+    badges.push({ label: "Earring", kind: "earring" });
+  }
+  if (bracelet && signals.bracelets.has(norm(bracelet))) {
+    badges.push({ label: "Bracelet", kind: "bracelet" });
+  }
+  return badges.slice(0, 3);
+}
+
+function hasItemSynergyDetails(item, signals) {
+  const earring = getAttributeValue(item, "Earrings");
+  const bracelet = getAttributeValue(item, "Bracelet");
+  return Boolean(
+    item.localComboBonus > 0
+    || (earring && signals.earrings.has(norm(earring)))
+    || (bracelet && signals.bracelets.has(norm(bracelet)))
+  );
+}
+
+function getItemSynergyBreakdown(item, signals) {
+  const lines = [];
+  const earring = getAttributeValue(item, "Earrings");
+  const bracelet = getAttributeValue(item, "Bracelet");
+
+  if (item.numberPower > 0) {
+    lines.push(`Number Power: +${formatNumber(item.numberPower)}`);
+  }
+  if (item.localComboBonus > 0) {
+    const combo = getLocalComboSummary(item);
+    lines.push(`Local Combo: ${combo.tokenLabel} +${formatNumber(item.localComboBonus)}`);
+    if (combo.sourceLabel) {
+      lines.push(`Combo Source: ${combo.sourceLabel}`);
+    }
+  }
+  if (earring) {
+    const earringSync = signals.earrings.get(norm(earring));
+    if (earringSync) {
+      lines.push(`Team Earring: ${earringSync.value} x${earringSync.count} +${formatNumber(earringSync.bonus)}`);
+    }
+  }
+  if (bracelet) {
+    const braceletSync = signals.bracelets.get(norm(bracelet));
+    if (braceletSync) {
+      lines.push(`Team Bracelet: ${braceletSync.value} x${braceletSync.count} +${formatNumber(braceletSync.bonus)}`);
+    }
+  }
+  return lines;
+}
+
+function getItemFeatureKeys(item) {
+  const keys = [];
+  const earring = getAttributeValue(item, "Earrings");
+  const bracelet = getAttributeValue(item, "Bracelet");
+
+  if (earring) {
+    keys.push(`earring:${norm(earring)}`);
+  }
+  if (bracelet) {
+    keys.push(`bracelet:${norm(bracelet)}`);
+  }
+  for (const token of new Set(item.logoMatches.map((match) => match.token))) {
+    keys.push(`logo:${token}`);
+  }
+  if (item.numberPower > 0) {
+    keys.push("special:number");
+  }
+  if (item.localComboBonus > 0) {
+    keys.push("special:combo");
+  }
+
+  return keys;
+}
+
+function getTeamLeadLabel(entry) {
+  const top = entry.result.synergyDetails[0]?.trait || "";
+  if (top.startsWith("Logo: ")) {
+    return top.replace("Logo: ", "");
+  }
+  if (top.startsWith("Earrings: ")) {
+    return top.replace("Earrings: ", "");
+  }
+  if (top.startsWith("Bracelet: ")) {
+    return top.replace("Bracelet: ", "");
+  }
+  if (top.startsWith("Full team: ")) {
+    return top.replace("Full team: ", "");
+  }
+  return "Cavern";
+}
+
+function buildEmotionCandidatePool(items, searchWidth) {
+  const sorted = [...items].sort((a, b) =>
+    b.score - a.score
+    || b.power - a.power
+    || b.attributeBreakdown.length - a.attributeBreakdown.length
+    || a.name.localeCompare(b.name, "ru")
+  );
+  const selected = new Map();
+  const baseTake = Math.max(18, Math.min(sorted.length, Math.floor(searchWidth * 0.45)));
+  sorted.slice(0, baseTake).forEach((item) => selected.set(item.address, item));
+
+  const featureBuckets = new Map();
+  for (const item of sorted) {
+    for (const key of getItemFeatureKeys(item)) {
+      const bucket = featureBuckets.get(key) || [];
+      if (bucket.length < 4) {
+        bucket.push(item);
+        featureBuckets.set(key, bucket);
+      }
+    }
+  }
+
+  for (const bucket of featureBuckets.values()) {
+    bucket.forEach((item) => selected.set(item.address, item));
+  }
+
+  return [...selected.values()]
+    .sort((a, b) => b.score - a.score || b.power - a.power || a.name.localeCompare(b.name, "ru"))
+    .slice(0, Math.max(searchWidth, 60));
+}
+
+function getRemainingMaxPower(groups, startIndex) {
+  let total = 0;
+  for (let index = startIndex; index < groups.length; index += 1) {
+    total += groups[index].length ? groups[index][0].score : 0;
+  }
+  return total;
+}
+
+function getTeamIdentity(team) {
+  return team.filter(Boolean).map((item) => item.address).join("|");
+}
+
+async function buildBeamBestTeam(items, config, onProgress) {
+  const groups = EMOTIONS.map((emotion) =>
+    buildEmotionCandidatePool(items.filter((item) => item.emotion === emotion), config.searchWidth)
+  );
+  const beamWidth = Math.max(120, Math.min(2000, config.searchWidth * 6));
+  let beam = [{
+    team: [],
+    result: evaluateTeam([], config),
+    optimistic: getRemainingMaxPower(groups, 0)
+  }];
+
+  for (let index = 0; index < groups.length; index += 1) {
+    const candidates = groups[index];
+    const next = [];
+    const seen = new Map();
+
+    if (!candidates.length) {
+      beam = beam.map((entry) => {
+        const team = [...entry.team, null];
+        const result = evaluateTeam(team, config);
+        return {
+          team,
+          result,
+          optimistic: result.totalScore + getRemainingMaxPower(groups, index + 1)
+        };
+      });
+      continue;
+    }
+
+    for (const entry of beam) {
+      for (const item of candidates) {
+        const team = [...entry.team, item];
+        const result = evaluateTeam(team, config);
+        const optimistic = result.totalScore + getRemainingMaxPower(groups, index + 1);
+        const key = getTeamIdentity(team);
+        const current = seen.get(key);
+        if (!current || optimistic > current.optimistic || result.totalScore > current.result.totalScore) {
+          seen.set(key, { team, result, optimistic });
+        }
+      }
+    }
+
+    beam = [...seen.values()]
+      .sort((a, b) =>
+        b.result.coverage - a.result.coverage
+        || b.optimistic - a.optimistic
+        || b.result.totalScore - a.result.totalScore
+      )
+      .slice(0, beamWidth);
+
+    if (typeof onProgress === "function") {
+      onProgress(`Building top teams: emotion ${index + 1}/7...`, { step: index + 1, total: groups.length, beamSize: beam.length });
+    }
+    await sleep(0);
+  }
+
+  return beam
+    .filter((entry) => entry.result.coverage > 0)
+    .sort((a, b) =>
+      b.result.coverage - a.result.coverage
+      || b.result.totalScore - a.result.totalScore
+      || b.result.synergyScore - a.result.synergyScore
+    )[0] || null;
+}
+
+async function buildTopTeams(items, config, onProgress) {
+  // Ranking follows the saved rules every time:
+  // item power already includes attributes, sticker numbers, and local word-based combos;
+  // team score adds shared Earrings / Bracelet / Logo bonuses;
+  // once an orc is locked into a higher-ranked team, it cannot be reused later.
+  const rankedTeams = [];
+  const usedAddresses = new Set();
+  const maxTeams = 10;
+
+  for (let teamIndex = 0; teamIndex < maxTeams; teamIndex += 1) {
+    const remainingItems = items.filter((item) => !usedAddresses.has(item.address));
+    if (!remainingItems.length) {
+      break;
+    }
+
+    const bestEntry = await buildBeamBestTeam(remainingItems, config, (message, meta) => {
+      if (typeof onProgress === "function") {
+        onProgress(`Building unique teams: ${teamIndex + 1}/${maxTeams} · ${message}`, meta);
+      }
+    });
+
+    if (!bestEntry || bestEntry.result.coverage === 0) {
+      break;
+    }
+
+    rankedTeams.push(bestEntry);
+    bestEntry.team.filter(Boolean).forEach((item) => usedAddresses.add(item.address));
+
+    if (typeof onProgress === "function") {
+      onProgress(
+        `Locked unique team ${teamIndex + 1}/${maxTeams} · ${bestEntry.result.coverage} Orcs · ${formatNumber(bestEntry.result.totalScore)} PWR`,
+        { step: teamIndex + 1, total: maxTeams, coverage: bestEntry.result.coverage }
+      );
+    }
+    await sleep(0);
+  }
+
+  return rankedTeams;
+}
+
+function normalizeItem(rawItem, config) {
+  const metadata = rawItem.metadata || {};
+  const attributes = Array.isArray(metadata.attributes) ? metadata.attributes : [];
+  const cleanAttributes = attributes
+    .filter((attr) => attr && attr.trait_type && attr.value !== undefined && attr.value !== null)
+    .map((attr) => ({
+      trait_type: String(attr.trait_type).trim(),
+      value: String(attr.value).trim()
+    }));
+
+  const targetTrait = norm(config.traitType);
+  const targetValue = norm(config.traitValue);
+
+  const matchesFocus = cleanAttributes.some((attr) =>
+    norm(attr.trait_type) === targetTrait && norm(attr.value) === targetValue
+  );
+
+  const name = metadata.name || `Orc #${rawItem.index ?? "?"}`;
+  const number = extractNumber(name);
+  const emotion = extractEmotion(name);
+  const attributeBreakdown = cleanAttributes.map((attr) => ({
+    trait_type: attr.trait_type,
+    value: attr.value,
+    power: getAttributePower(attr.trait_type, attr.value, config.fallbackPower)
+  }));
+  const attributePower = attributeBreakdown.reduce((sum, attr) => sum + attr.power, 0);
+  const numberPower = getStickerNumberPower(number);
+  const localCombo = buildLocalAttributeCombo(cleanAttributes);
+  const power = attributePower + numberPower + localCombo.bonus;
+  const score = power + (matchesFocus ? config.focusBonus : 0);
+  const synergyTraits = cleanAttributes
+    .filter((attr) => norm(attr.trait_type) !== targetTrait)
+    .map((attr) => `${attr.trait_type}: ${attr.value}`);
+
+  return {
+    address: rawItem.address,
+    name,
+    number,
+    emotion,
+    attributePower,
+    numberPower,
+    localComboBonus: localCombo.bonus,
+    localComboLabels: localCombo.labels,
+    localComboTokens: localCombo.tokens,
+    power,
+    score,
+    matchesFocus,
+    image: getImage(rawItem),
+    attributes: cleanAttributes,
+    attributeBreakdown,
+    synergyTraits,
+    synergyTraitSet: new Set(synergyTraits),
+    logoMatches: getLogoMatches(cleanAttributes),
+    market: metadata.marketplace || "getgems.io"
+  };
+}
+
+async function fetchJsonWithRetry(url, options = {}, context = {}) {
+  const maxAttempts = context.maxAttempts || 6;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const response = await fetch(url, options);
+    if (response.ok) {
+      return response.json();
+    }
+
+    if (response.status !== 429) {
+      throw new Error(`TonAPI вернул ${response.status}.`);
+    }
+
+    if (attempt === maxAttempts) {
+      throw new Error("TonAPI kept returning 429 for too long. Please wait a bit and try again.");
+    }
+
+    const retryAfter = Number(response.headers.get("retry-after"));
+    const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+      ? retryAfter * 1000
+      : Math.min(12000, 1200 * Math.pow(2, attempt - 1));
+
+    if (typeof context.onRetry === "function") {
+      context.onRetry(waitMs, attempt);
+    }
+
+    await sleep(waitMs);
+  }
+
+  throw new Error("Failed to get a response from TonAPI.");
+}
+
+async function fetchCollectionItems(address, pageLimit, config, onProgress) {
+  const matchedItems = [];
+  const seenAddresses = new Set();
+  let matchedFocusCount = 0;
+  let checkedCount = 0;
+  let offset = 0;
+  let page = 0;
+  const maxPages = 1000;
+
+  while (page < maxPages) {
+    const url = `https://tonapi.io/v2/nfts/collections/${encodeURIComponent(address)}/items?limit=${pageLimit}&offset=${offset}`;
+    const data = await fetchJsonWithRetry(
+      url,
+      { headers: { accept: "application/json" } },
+      {
+        maxAttempts: 6,
+        onRetry(waitMs, attempt) {
+          onProgress(
+            `TonAPI 429 on page ${page + 1}. Waiting ${Math.ceil(waitMs / 1000)}s and retrying (${attempt}/6)...`,
+            { checkedCount, matchedCount: matchedFocusCount, page: page + 1 }
+          );
+        }
+      }
+    );
+    const batch = Array.isArray(data.nft_items) ? data.nft_items : [];
+    let uniqueAdded = 0;
+    for (const rawItem of batch) {
+      const key = rawItem?.address || `${rawItem?.collection?.address || "collection"}:${rawItem?.index ?? checkedCount}`;
+      if (seenAddresses.has(key)) {
+        continue;
+      }
+      seenAddresses.add(key);
+      checkedCount += 1;
+      uniqueAdded += 1;
+      if (rawItemMatchesFocus(rawItem, config)) {
+        matchedFocusCount += 1;
+        matchedItems.push(rawItem);
+      }
+    }
+
+    onProgress(
+      `Checked ${checkedCount} NFTs · found ${matchedFocusCount} Cavern · page ${page + 1}...`,
+      { checkedCount, matchedCount: matchedFocusCount, page: page + 1 }
+    );
+
+    if (!batch.length || batch.length < pageLimit) {
+      break;
+    }
+
+    offset += batch.length;
+    page += 1;
+    await sleep(250);
+  }
+
+  if (page >= maxPages) {
+    throw new Error("The collection is too large for a single pass. Increase the page limit in code.");
+  }
+
+  return {
+    checkedCount,
+    matchedCount: matchedFocusCount,
+    items: matchedItems
+  };
+}
+
+async function fetchCollectionSize(address) {
+  const url = `https://tonapi.io/v2/nfts/collections/${encodeURIComponent(address)}`;
+  const data = await fetchJsonWithRetry(url, { headers: { accept: "application/json" } }, { maxAttempts: 4 });
+  const nextItemIndex = Number(data?.next_item_index);
+  return Number.isFinite(nextItemIndex) && nextItemIndex > 0 ? nextItemIndex : null;
+}
+
+function buildTraitFrequency(items) {
+  const map = new Map();
+  for (const item of items) {
+    for (const trait of item.synergyTraits) {
+      map.set(trait, (map.get(trait) || 0) + 1);
+    }
+  }
+  return [...map.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ru"))
+    .slice(0, 16);
+}
+
+function buildEmotionCoverage(items) {
+  return EMOTIONS.map((emotion) => ({
+    emotion,
+    count: items.filter((item) => item.emotion === emotion).length
+  }));
+}
+
+function evaluateTeam(team, config) {
+  const realTeam = team.filter(Boolean);
+  let synergyScore = 0;
+  const synergyDetails = [];
+
+  [
+    { traitType: "Earrings", table: EARRING_TEAM_BONUS, label: "Earrings" },
+    { traitType: "Bracelet", table: BRACELET_TEAM_BONUS, label: "Bracelet" }
+  ].forEach((rule) => {
+    const counts = new Map();
+    for (const item of realTeam) {
+      const attr = item.attributes.find((entry) => norm(entry.trait_type) === norm(rule.traitType));
+      if (!attr) {
+        continue;
+      }
+      const key = norm(attr.value);
+      counts.set(key, {
+        value: attr.value,
+        count: (counts.get(key)?.count || 0) + 1
+      });
+    }
+
+    for (const { value, count } of counts.values()) {
+      const bonus = getTierBonus(count, rule.table);
+      if (!bonus) {
+        continue;
+      }
+      synergyScore += bonus;
+      synergyDetails.push({
+        trait: `${rule.label}: ${value}`,
+        count,
+        bonus
+      });
+    }
+  });
+
+  const logoCounts = new Map();
+  for (const item of realTeam) {
+    for (const match of item.logoMatches) {
+      logoCounts.set(match.token, (logoCounts.get(match.token) || 0) + 1);
+    }
+  }
+  for (const [token, count] of logoCounts.entries()) {
+    const bonus = getTierBonus(count, LOGO_TEAM_BONUS);
+    if (!bonus) {
+      continue;
+    }
+    synergyScore += bonus;
+    synergyDetails.push({
+      trait: `Logo: ${formatTokenLabel(token)}`,
+      count,
+      bonus
+    });
+  }
+
+  if (realTeam.length === EMOTIONS.length) {
+    const sameTribe = realTeam.every((item) => item.matchesFocus);
+    if (sameTribe) {
+      const sameTribeTotal = config.sameTribeBonus * realTeam.length;
+      if (sameTribeTotal) {
+        synergyScore += sameTribeTotal;
+        synergyDetails.push({
+          trait: `Full team: ${config.traitValue} tribe`,
+          count: realTeam.length,
+          bonus: sameTribeTotal
+        });
+      }
+    }
+  }
+
+  synergyDetails.sort((a, b) => b.bonus - a.bonus || b.count - a.count || a.trait.localeCompare(b.trait, "ru"));
+
+  const teamPower = realTeam.reduce((sum, item) => sum + item.power, 0);
+  const totalScore = teamPower + synergyScore;
+
+  return {
+    teamPower,
+    synergyScore,
+    totalScore,
+    coverage: realTeam.length,
+    synergyDetails
+  };
+}
+
+function buildBestTeam(items, config) {
+  const legacyCap = Math.max(5, Math.min(24, Math.floor((config.searchWidth || 120) / 12)));
+  const groups = EMOTIONS.map((emotion) =>
+    items
+      .filter((item) => item.emotion === emotion)
+      .sort((a, b) => b.score - a.score || b.synergyTraits.length - a.synergyTraits.length)
+      .slice(0, legacyCap)
+  );
+
+  let best = {
+    team: Array(EMOTIONS.length).fill(null),
+    result: evaluateTeam([], config)
+  };
+
+  function dfs(index, current) {
+    if (index === groups.length) {
+      const result = evaluateTeam(current, config);
+      if (
+        result.coverage > best.result.coverage ||
+        (result.coverage === best.result.coverage && result.totalScore > best.result.totalScore)
+      ) {
+        best = { team: [...current], result };
+      }
+      return;
+    }
+
+    const candidates = groups[index];
+    if (!candidates.length) {
+      current.push(null);
+      dfs(index + 1, current);
+      current.pop();
+      return;
+    }
+
+    for (const item of candidates) {
+      current.push(item);
+      dfs(index + 1, current);
+      current.pop();
+    }
+  }
+
+  dfs(0, []);
+  return best;
+}
+
+function renderMetrics(rawCount, filteredCount, bestTeamResult, coverage) {
+  const grid = document.getElementById("metricsGrid");
+  const coverageCount = coverage.filter((item) => item.count > 0).length;
+  grid.innerHTML = `
+    <div class="metric">
+      <div class="n">${formatNumber(rawCount)}</div>
+      <div class="k">Всего NFT</div>
+      <div class="v">Полный размер коллекции, который удалось пройти через live API.</div>
+    </div>
+    <div class="metric">
+      <div class="n">${formatNumber(filteredCount)}</div>
+      <div class="k">Cavern-орки</div>
+      <div class="v">Прошли текущий фильтр по target trait.</div>
+    </div>
+    <div class="metric">
+      <div class="n">${coverageCount} / 7</div>
+      <div class="k">Покрытие эмоций</div>
+      <div class="v">${coverageCount === 7 ? "Можно собрать полный состав." : "Некоторые эмоции пока не закрыты."}</div>
+    </div>
+    <div class="metric">
+      <div class="n">${formatNumber(bestTeamResult.totalScore)}</div>
+      <div class="k">Лучшая сумма</div>
+      <div class="v">Сумма личного power и всех командных бонусов лучшего состава.</div>
+    </div>
+  `;
+}
+
+function renderTopTeams(teams) {
+  const root = document.getElementById("topTeamsGrid");
+  const totalBox = document.getElementById("topTeamsTotal");
+  const totalValue = totalBox?.querySelector(".variant-total-value");
+  const totalSub = totalBox?.querySelector(".variant-total-sub");
+  const combinedPower = teams.reduce((sum, entry) => sum + (entry?.result?.totalScore || 0), 0);
+  if (totalValue) {
+    totalValue.textContent = `${formatNumber(combinedPower)} PWR`;
+  }
+  if (totalSub) {
+    totalSub.textContent = teams.length
+      ? `Combined total score of ${teams.length} ranked teams.`
+      : "Combined total score of all ranked teams.";
+  }
+  if (!teams.length) {
+    root.innerHTML = `<div class="empty-state">No team variants could be built yet.</div>`;
+    return;
+  }
+
+  root.innerHTML = teams.map((entry, index) => {
+    const teamSignals = computeTeamSignals(entry.team);
+    const leadLabel = getTeamLeadLabel(entry);
+    const headlineBadges = [];
+    if (teamSignals.fullCavern) {
+      headlineBadges.push(`<span class="team-pill green">FULL TEAM</span>`);
+    }
+    headlineBadges.push(`<span class="team-pill orange">${formatNumber(entry.result.totalScore)} PWR</span>`);
+    entry.result.synergyDetails
+      .filter((detail) => !detail.trait.startsWith("Full team:"))
+      .slice(0, 3)
+      .forEach((detail) => {
+        const shortLabel = detail.trait
+          .replace(/^Logo:\s*/i, "Logo: ")
+          .replace(/^Earrings:\s*/i, "Earring: ")
+          .replace(/^Bracelet:\s*/i, "Bracelet: ");
+        headlineBadges.push(`<span class="team-pill blue">${escapeHtml(shortLabel)} x${detail.count} +${formatNumber(detail.bonus)} PWR</span>`);
+      });
+
+    const slots = EMOTIONS.map((emotion, emotionIndex) => {
+      const item = entry.team[emotionIndex];
+      if (!item) {
+        return `
+          <div class="slot empty">
+            <div class="slot-cover"></div>
+            <div class="slot-body">
+              <div class="slot-tag">${escapeHtml(emotion)}</div>
+              <div class="slot-meta">0</div>
+              <div class="slot-score">
+                <div class="score-main">No candidate</div>
+                <div class="score-sub">empty</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const badges = getItemTeamBadges(item, teamSignals)
+        .map((badge) => `<span class="slot-pill ${badge.kind}">${escapeHtml(badge.label)}</span>`)
+        .join("");
+      const breakdownLines = getItemSynergyBreakdown(item, teamSignals)
+        .map((line) => `<div class="slot-breakdown-line">${escapeHtml(line)}</div>`)
+        .join("");
+      const synergyAction = hasItemSynergyDetails(item, teamSignals)
+        ? `<button type="button" class="slot-action" data-open-item-modal="true" data-team-index="${index}" data-item-address="${escapeHtml(item.address)}">Synergy</button>`
+        : "";
+      return `
+        <div class="slot">
+          <div class="slot-cover">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'">
+          </div>
+          <div class="slot-body">
+            <div class="slot-tag">${escapeHtml(emotion)}</div>
+            <div class="slot-meta">${formatNumber(item.power)} PWR</div>
+            <div class="slot-badges">${badges || '<span class="slot-pill">Base</span>'}</div>
+            <div class="slot-score">
+              <div class="score-main">${escapeHtml(item.name)}</div>
+              <div class="score-sub">${escapeHtml(emotion)}</div>
+            </div>
+            ${breakdownLines ? `<div class="slot-breakdown">${breakdownLines}</div>` : ""}
+            ${synergyAction}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <article class="variant-card">
+        <div class="team-board">
+          <div class="team-head">
+            <div class="variant-titleline">
+              <span class="variant-rank">#${index + 1}</span>
+              <span class="variant-title">${escapeHtml(leadLabel)}</span>
+              <span class="variant-meta">(${entry.result.coverage} Orcs, ${formatNumber(entry.result.teamPower)} PWR)</span>
+            </div>
+            <div class="team-badges">${headlineBadges.join("")}</div>
+          </div>
+          <div class="team-slots">${slots}</div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderRoster(items) {
+  const rosterGrid = document.getElementById("rosterGrid");
+  if (!items.length) {
+    rosterGrid.innerHTML = `<div class="empty-state">По текущему фильтру подходящих Cavern-орков не найдено.</div>`;
+    return;
+  }
+
+  const sorted = [...items].sort((a, b) => {
+    if (state.sortMode === "emotion") {
+      return a.emotion.localeCompare(b.emotion, "ru") || b.score - a.score;
+    }
+    return b.score - a.score || b.power - a.power || a.name.localeCompare(b.name, "ru");
+  });
+
+  rosterGrid.innerHTML = sorted.slice(0, 120).map((item) => {
+    const attrs = item.attributeBreakdown.map((attr) => `
+      <div class="attr">
+        <b>${escapeHtml(attr.trait_type)}</b>
+        <span>${escapeHtml(attr.value)} · +${formatNumber(attr.power)}</span>
+      </div>
+    `).join("");
+    const extras = [
+      item.numberPower > 0 ? `
+        <div class="attr">
+          <b>Sticker Number</b>
+          <span>#${escapeHtml(item.number ?? "?")} · +${formatNumber(item.numberPower)}</span>
+        </div>
+      ` : "",
+      item.localComboBonus > 0 ? `
+        <div class="attr">
+          <b>Local Combo</b>
+          <span>+${formatNumber(item.localComboBonus)}</span>
+        </div>
+      ` : ""
+    ].join("");
+
+    return `
+      <article class="orc-card">
+        <div class="orc-cover">
+          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'">
+        </div>
+        <div class="orc-body">
+          <div class="orc-name">${escapeHtml(item.name)}</div>
+          <div class="orc-sub">${escapeHtml(item.emotion)} · ${escapeHtml(item.address)}</div>
+          <div class="orc-stats">
+            <span class="tag">Power ${formatNumber(item.power)}</span>
+            <span class="tag">Traits ${formatNumber(item.attributePower)}</span>
+            <span class="tag">Number +${formatNumber(item.numberPower)}</span>
+            <span class="tag">Combo +${formatNumber(item.localComboBonus)}</span>
+            <span class="tag">Score ${formatNumber(item.score)}</span>
+          </div>
+          <div class="attr-stack">${attrs || '<div class="attr"><b>Нет</b><span>Атрибуты не найдены</span></div>'}${extras}</div>
+          <div class="hint">${escapeHtml(item.market)}${item.localComboLabels.length ? ` · combo: ${escapeHtml(item.localComboLabels.join(" / "))}` : ""}</div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  if (sorted.length > 120) {
+    rosterGrid.insertAdjacentHTML("beforeend", `
+      <div class="empty-state">Показаны первые 120 карточек из ${formatNumber(sorted.length)}. Остальные уже загружены и участвуют в расчете команды.</div>
+    `);
+  }
+}
+
+function renderTraits(items) {
+  const traitList = document.getElementById("traitList");
+  const traitFrequency = buildTraitFrequency(items);
+  traitList.innerHTML = traitFrequency.length ? traitFrequency.map(([trait, count]) => `
+    <div class="trait-item">
+      <div>
+        <strong>${escapeHtml(trait)}</strong>
+        <span>Повторяется у нескольких Cavern-орков.</span>
+      </div>
+      <strong>${formatNumber(count)}</strong>
+    </div>
+  `).join("") : `<div class="trait-item"><strong>Нет данных</strong><span>Пока не из чего строить частоты.</span></div>`;
+
+  const coverage = buildEmotionCoverage(items);
+  const emotionList = document.getElementById("emotionList");
+  emotionList.innerHTML = coverage.map((item) => `
+    <div class="emotion-item">
+      <div>
+        <strong>${escapeHtml(item.emotion)}</strong>
+        <span>${item.count > 0 ? "Слот можно закрыть." : "Кандидатов пока нет."}</span>
+      </div>
+      <strong>${formatNumber(item.count)}</strong>
+    </div>
+  `).join("");
+
+  const pills = document.getElementById("coveragePills");
+  pills.innerHTML = coverage
+    .filter((item) => item.count > 0)
+    .map((item) => `<span class="pill">${escapeHtml(item.emotion)}: ${formatNumber(item.count)}</span>`)
+    .join("");
+}
+
+async function runAnalysis() {
+  const config = getConfig();
+
+  try {
+    const address = await parseCollectionAddress(config.collectionInput);
+    setStatus("Starting collection scan...", "warn", 0);
+    const totalCount = await fetchCollectionSize(address);
+
+    const fetchResult = await fetchCollectionItems(address, config.pageLimit, config, (message, meta) => {
+      setStatus(message, "warn", getFetchProgress(meta?.checkedCount || 0, totalCount));
+    });
+    const normalized = fetchResult.items.map((item) => normalizeItem(item, config));
+    const filtered = normalized;
+    setStatus(`Found ${fetchResult.matchedCount} Cavern orcs. Building top 10 teams...`, "warn", 76);
+    const topTeams = await buildTopTeams(filtered, config, (message, meta) => {
+      setStatus(message, "warn", getBuildProgress(meta?.step || 0, meta?.total || 7));
+    });
+    const best = topTeams[0] || buildBestTeam(filtered, config);
+
+    state.items = normalized;
+    state.filtered = filtered;
+    state.topTeams = topTeams;
+    state.lastRun = Date.now();
+
+    renderTopTeams(topTeams);
+
+    if (!filtered.length) {
+      setStatus("No Cavern orcs found for the current collection.", "err", 100);
+      return;
+    }
+
+    setStatus(`Done: found ${fetchResult.matchedCount} Cavern orcs and built ${topTeams.length} strongest teams.`, "ok", 100);
+  } catch (error) {
+    console.error(error);
+    setStatus(error.message || "Failed to load collection.", "err", 100);
+  }
+}
+
+createParticles();
+window.addEventListener("load", () => {
+  resetInitialViewport();
+  const topTeamsGrid = document.getElementById("topTeamsGrid");
+  if (topTeamsGrid) {
+    topTeamsGrid.addEventListener("click", (event) => {
+      const trigger = event.target.closest("[data-open-item-modal]");
+      if (!trigger) {
+        return;
+      }
+      const teamIndex = Number(trigger.getAttribute("data-team-index"));
+      const address = trigger.getAttribute("data-item-address");
+      const entry = state.topTeams[teamIndex];
+      if (!entry || !address) {
+        return;
+      }
+      const item = entry.team.find((candidate) => candidate && candidate.address === address);
+      if (!item) {
+        return;
+      }
+      openItemModal(item, computeTeamSignals(entry.team));
+    });
+  }
+  const itemModal = document.getElementById("itemModal");
+  if (itemModal) {
+    itemModal.addEventListener("click", (event) => {
+      if (event.target === itemModal || event.target.closest("[data-close-item-modal]")) {
+        closeItemModal();
+      }
+    });
+  }
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeItemModal();
+    }
+  });
+  runAnalysis();
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+  });
+});
+</script>
+</body>
+</html>
