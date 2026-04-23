@@ -71,13 +71,13 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 .hero-h{font-size:19px;font-weight:700;line-height:1.55;margin-bottom:18px;max-width:620px;color:var(--text);}
 .hero-h span{color:var(--g3);}
 .hero-copy{font-size:14px;line-height:1.88;color:var(--dim2);max-width:660px;margin-bottom:30px;}
-.hero-visual{position:relative;z-index:1;width:100%;max-width:520px;justify-self:center;align-self:start;display:flex;align-items:center;justify-content:center;padding-top:6px;margin-top:-14px;}
+.hero-visual{position:relative;z-index:1;width:100%;max-width:520px;justify-self:center;align-self:start;display:flex;align-items:flex-start;justify-content:center;padding-top:0;line-height:0;margin-top:-14px;}
 .ring{position:absolute;border-radius:50%;border:1px solid rgba(145,145,145,.07);}
 .r1{width:300px;height:300px;animation:rp 5s ease-in-out infinite;}
 .r2{width:400px;height:400px;animation:rp 5s ease-in-out infinite .9s;opacity:.5;}
 .r3{width:500px;height:500px;animation:rp 5s ease-in-out infinite 1.8s;opacity:.22;}
 @keyframes rp{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
-.hero-img{width:min(100%,340px);height:auto;position:relative;z-index:1;filter:drop-shadow(0 0 60px rgba(120,120,120,.4));animation:fl 5s ease-in-out infinite;}
+.hero-img{width:min(100%,340px);height:auto;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 60px rgba(120,120,120,.4));animation:fl 5s ease-in-out infinite;}
 @keyframes fl{0%,100%{transform:translateY(0) rotate(-.7deg);}50%{transform:translateY(-14px) rotate(.7deg);}}
 .btns{display:flex;gap:12px;flex-wrap:wrap;}
 
@@ -385,6 +385,19 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
   .nav-ul{display:none;}
   section{padding:56px 20px;}
   .hero{padding:82px 20px 8px;min-height:64vh;grid-template-columns:1fr;}
+  .hero-content{padding-left:0;}
+  .hero-visual{
+    display:flex;
+    width:100%;
+    max-width:260px;
+    margin:18px auto 0;
+    justify-self:center;
+    align-self:start;
+  }
+  .hero-img{width:min(100%,240px);}
+  .r1{width:210px;height:210px;}
+  .r2{width:270px;height:270px;}
+  .r3{width:330px;height:330px;}
   .sbar{flex-wrap:wrap;}
   .si{min-width:50%;border-bottom:1px solid var(--bd);}
   .team-slots{grid-template-columns:repeat(7,minmax(150px,1fr));}
@@ -441,6 +454,9 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
         <h3>Analyzer</h3>
       </div>
       <input id="collectionInput" class="sr-only" value="https://getgems.io/unstoppabletribe?filter=%7B%22attributes%22%3A%7B%22Skin+Tone%22%3A%5B%22Cavern%22%5D%7D%7D">
+      <div class="actions">
+        <button type="button" class="btn-m" id="startAnalysisBtn">Start Analysis</button>
+      </div>
 
       <div class="status" id="loadStatus">
         <div class="status-title">Current Step</div>
@@ -585,6 +601,7 @@ const EARRING_TEAM_BONUS = { 4: 400, 5: 500, 6: 700, 7: 1000 };
 const BRACELET_TEAM_BONUS = { 4: 400 };
 const LOGO_TEAM_BONUS = { 4: 400, 5: 500, 6: 700, 7: 1000 };
 const FULL_TEAM_BONUS_PER_ORC = 50;
+const REQUEST_TIMEOUT_MS = 20000;
 const TEAM_LOGO_KEYS = new Set([
   "zargates", "bitcoin", "telegram", "ton", "tribo games", "dollar", "eth", "rub", "elephant"
 ]);
@@ -593,7 +610,8 @@ const state = {
   filtered: [],
   topTeams: [],
   sortMode: "strongest",
-  lastRun: null
+  lastRun: null,
+  isRunning: false
 };
 
 function norm(value) {
@@ -619,6 +637,24 @@ function formatNumber(value) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function createNetworkErrorMessage(error, url) {
+  const host = (() => {
+    try {
+      return new URL(url).hostname;
+    } catch (_error) {
+      return "remote host";
+    }
+  })();
+  const browserOffline = typeof navigator !== "undefined" && navigator.onLine === false;
+  if (browserOffline) {
+    return "No internet connection detected in the browser.";
+  }
+  if (error?.name === "AbortError") {
+    return `Request to ${host} timed out. This can happen when TonAPI is slow or when your network works better with VPN.`;
+  }
+  return `Could not reach ${host}. This may be a temporary network issue, a blocked request, or a region/VPN problem.`;
 }
 
 function createParticles() {
@@ -663,6 +699,13 @@ function setStatus(message, kind = "", progress = null) {
   if (flag) {
     flag.style.left = `${safeProgress}%`;
     flag.style.opacity = safeProgress <= 0 ? "0" : "1";
+  }
+}
+
+function resetStatusProgress() {
+  const status = document.getElementById("loadStatus");
+  if (status) {
+    status.dataset.progress = "0";
   }
 }
 
@@ -954,9 +997,6 @@ function getItemModalSections(item, signals) {
 }
 
 function renderItemModalRows(rows) {
-  if (!rows.length) {
-    return `<div class="item-row"><div><div class="item-row-main">No active entries</div><div class="item-row-sub">Nothing extra is active for this section.</div></div><div class="item-row-score">0 PWR</div></div>`;
-  }
   return rows.map((row) => `
     <div class="item-row">
       <div>
@@ -966,6 +1006,18 @@ function renderItemModalRows(rows) {
       <div class="item-row-score">${formatNumber(row.bonus)} PWR</div>
     </div>
   `).join("");
+}
+
+function renderItemModalSection(title, rows) {
+  if (!rows.length) {
+    return "";
+  }
+  return `
+    <div class="item-section">
+      <div class="item-section-title">${escapeHtml(title)}</div>
+      ${renderItemModalRows(rows)}
+    </div>
+  `;
 }
 
 function openItemModal(item, teamSignals) {
@@ -992,18 +1044,9 @@ function openItemModal(item, teamSignals) {
         </div>
       </div>
       <div class="item-modal-sections">
-        <div class="item-section">
-          <div class="item-section-title">Attributes Synergy</div>
-          ${renderItemModalRows(sections.internalRows)}
-        </div>
-        <div class="item-section">
-          <div class="item-section-title">Team Synergy</div>
-          ${renderItemModalRows(sections.teamRows)}
-        </div>
-        <div class="item-section">
-          <div class="item-section-title">Attributes</div>
-          ${renderItemModalRows(sections.attributeRows)}
-        </div>
+        ${renderItemModalSection("Attributes Synergy", sections.internalRows)}
+        ${renderItemModalSection("Team Synergy", sections.teamRows)}
+        ${renderItemModalSection("Attributes", sections.attributeRows)}
       </div>
     </div>
   `;
@@ -1455,13 +1498,36 @@ async function fetchJsonWithRetry(url, options = {}, context = {}) {
   const maxAttempts = context.maxAttempts || 6;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const response = await fetch(url, options);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), context.timeoutMs || REQUEST_TIMEOUT_MS);
+    let response;
+    try {
+      response = await fetch(url, { ...options, signal: controller.signal });
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (attempt === maxAttempts) {
+        throw new Error(createNetworkErrorMessage(error, url));
+      }
+      const waitMs = Math.min(10000, 1200 * Math.pow(2, attempt - 1));
+      if (typeof context.onRetry === "function") {
+        context.onRetry(waitMs, attempt, createNetworkErrorMessage(error, url));
+      }
+      await sleep(waitMs);
+      continue;
+    }
+    clearTimeout(timeoutId);
     if (response.ok) {
       return response.json();
     }
 
     if (response.status !== 429) {
-      throw new Error(`TonAPI вернул ${response.status}.`);
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(`TonAPI rejected the request with ${response.status}. This can happen because of region, firewall, VPN, or API protection.`);
+      }
+      if (response.status >= 500) {
+        throw new Error(`TonAPI returned ${response.status}. The service may be temporarily unstable, so try again in a minute.`);
+      }
+      throw new Error(`TonAPI returned ${response.status}.`);
     }
 
     if (attempt === maxAttempts) {
@@ -1474,7 +1540,7 @@ async function fetchJsonWithRetry(url, options = {}, context = {}) {
       : Math.min(12000, 1200 * Math.pow(2, attempt - 1));
 
     if (typeof context.onRetry === "function") {
-      context.onRetry(waitMs, attempt);
+      context.onRetry(waitMs, attempt, null);
     }
 
     await sleep(waitMs);
@@ -1499,9 +1565,11 @@ async function fetchCollectionItems(address, pageLimit, config, onProgress) {
       { headers: { accept: "application/json" } },
       {
         maxAttempts: 6,
-        onRetry(waitMs, attempt) {
+        onRetry(waitMs, attempt, retryReason) {
           onProgress(
-            `TonAPI 429 on page ${page + 1}. Waiting ${Math.ceil(waitMs / 1000)}s and retrying (${attempt}/6)...`,
+            retryReason
+              ? `${retryReason} Waiting ${Math.ceil(waitMs / 1000)}s and retrying (${attempt}/6)...`
+              : `TonAPI 429 on page ${page + 1}. Waiting ${Math.ceil(waitMs / 1000)}s and retrying (${attempt}/6)...`,
             { checkedCount, matchedCount: matchedFocusCount, page: page + 1 }
           );
         }
@@ -1931,7 +1999,17 @@ function renderTraits(items) {
 }
 
 async function runAnalysis() {
+  if (state.isRunning) {
+    return;
+  }
+  state.isRunning = true;
+  resetStatusProgress();
   const config = getConfig();
+  const startButton = document.getElementById("startAnalysisBtn");
+  if (startButton) {
+    startButton.disabled = true;
+    startButton.textContent = "Analyzing...";
+  }
 
   try {
     const address = await parseCollectionAddress(config.collectionInput);
@@ -1965,6 +2043,12 @@ async function runAnalysis() {
   } catch (error) {
     console.error(error);
     setStatus(error.message || "Failed to load collection.", "err", 100);
+  } finally {
+    state.isRunning = false;
+    if (startButton) {
+      startButton.disabled = false;
+      startButton.textContent = "Start Analysis";
+    }
   }
 }
 
@@ -2004,7 +2088,12 @@ window.addEventListener("load", () => {
       closeItemModal();
     }
   });
-  runAnalysis();
+  const startButton = document.getElementById("startAnalysisBtn");
+  if (startButton) {
+    startButton.addEventListener("click", () => {
+      runAnalysis();
+    });
+  }
   requestAnimationFrame(() => {
     window.scrollTo(0, 0);
   });
