@@ -131,10 +131,10 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 .status-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:visible;position:relative;}
 .status-fill{
   height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#474747 0%, #5f5f5f 20%, #7a7a7a 45%, #aaaaaa 72%, #e2e2e2 100%);
-  transition:width .55s cubic-bezier(.22,.61,.36,1),background .35s ease,opacity .35s ease;
+  transition:width .85s cubic-bezier(.22,.61,.36,1),background .4s ease,opacity .4s ease;
 }
 .status-flag{
-  position:absolute;top:50%;left:0;transform:translate(-50%,-58%);transition:left .55s cubic-bezier(.22,.61,.36,1),opacity .35s ease;
+  position:absolute;top:50%;left:0;transform:translate(-50%,-58%);transition:left .85s cubic-bezier(.22,.61,.36,1),opacity .4s ease;
   filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
 }
 .status-flag img{display:block;width:28px;height:auto;}
@@ -211,6 +211,8 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 .slot-pill.earring{background:rgba(201,168,112,.18);border-color:rgba(201,168,112,.3);color:#f2dfba;}
 .slot-pill.bracelet{background:rgba(77,184,122,.12);border-color:rgba(77,184,122,.24);color:#c7ecd6;}
 .slot-pill.combo{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.11);}
+.slot-pill.keep{background:rgba(77,184,122,.14);border-color:rgba(77,184,122,.28);color:#c7ecd6;}
+.slot-pill.buy{background:rgba(201,168,112,.18);border-color:rgba(201,168,112,.34);color:#f2dfba;}
 .slot-score{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);text-align:center;min-height:52px;}
 .score-main{font-size:14px;font-weight:800;color:#e8e8e8;line-height:1.35;}
 .score-sub{font-size:11px;color:#c9a870;}
@@ -392,6 +394,182 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 .wallet-upgrade-price{font-size:28px;font-weight:900;color:#f2dfba;text-align:center;}
 .wallet-upgrade-market{font-size:12px;color:#9a9a9a;text-align:center;margin-top:4px;}
 .wallet-upgrade-meta{display:grid;gap:10px;}
+.wallet-plan-stack{display:grid;gap:18px;}
+.wallet-plan-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}
+.wallet-plan-panel{
+  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),#151515;
+  border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px;
+}
+.wallet-plan-panel .lbl{margin-bottom:12px;}
+.wallet-plan-empty{margin-top:8px;}
+.concept-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;}
+.concept-stack{display:grid;gap:18px;}
+.concept-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),#171717;
+  border:1px solid rgba(201,168,112,.12);border-radius:20px;padding:18px;
+  box-shadow:0 16px 34px rgba(0,0,0,.22);
+}
+.concept-card h3{font-size:20px;font-weight:900;margin-bottom:10px;color:#f1f1f1;}
+.concept-card p{font-size:13px;line-height:1.8;color:#a3a3a3;}
+.concept-card ul{list-style:none;display:grid;gap:8px;margin-top:12px;}
+.concept-card li{font-size:13px;line-height:1.7;color:#b2b2b2;padding-left:16px;position:relative;}
+.concept-card li::before{content:'•';position:absolute;left:0;color:#c9a870;}
+.palette-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px;}
+.palette-chip{border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:12px;background:#131313;}
+.palette-swatch{height:68px;border-radius:12px;margin-bottom:10px;border:1px solid rgba(255,255,255,.06);}
+.palette-name{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#ececec;}
+.palette-meta{font-size:11px;line-height:1.6;color:#8f8f8f;margin-top:4px;}
+.defence-map{
+  position:relative;min-height:340px;border-radius:20px;overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(201,168,112,.07), transparent 24%),
+    radial-gradient(circle at 82% 22%, rgba(160,196,176,.08), transparent 22%),
+    linear-gradient(180deg,#181818,#101010);
+  border:1px solid rgba(255,255,255,.05);
+  padding:18px;
+}
+.defence-map img{
+  display:block;width:100%;height:auto;border-radius:16px;position:relative;z-index:1;
+  border:1px solid rgba(255,255,255,.06);box-shadow:0 18px 36px rgba(0,0,0,.28);
+}
+.defence-map::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:42px 42px;opacity:.5;pointer-events:none;
+}
+.defence-path{
+  position:absolute;inset:0;
+}
+.defence-segment{
+  position:absolute;height:16px;border-radius:999px;
+  background:linear-gradient(90deg,rgba(178,178,178,.26),rgba(218,218,218,.22));
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 0 18px rgba(255,255,255,.05);
+}
+.defence-node{
+  position:absolute;width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #f5e5bf 0%, #b79057 42%, #4b3b22 100%);
+  border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;
+  color:#161616;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;
+  box-shadow:0 0 22px rgba(201,168,112,.2);
+}
+.defence-node.alt{
+  background:radial-gradient(circle at 35% 35%, #cde8d6 0%, #4db87a 44%, #173024 100%);
+  color:#eafff0;
+}
+.defence-node.enemy{
+  background:radial-gradient(circle at 35% 35%, #ffd8d8 0%, #c26262 44%, #351818 100%);
+  color:#fff1f1;
+}
+.defence-map-legend{position:relative;z-index:1;display:flex;gap:8px;flex-wrap:wrap;margin-top:256px;}
+.legend-pill{
+  padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#efefef;
+}
+.defence-board-note{position:relative;z-index:1;margin-top:12px;font-size:12px;line-height:1.7;color:#9a9a9a;}
+.unit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.unit-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#141414;
+  border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;
+}
+.unit-type{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#c9a870;margin-bottom:8px;}
+.unit-name{font-size:18px;font-weight:900;color:#f1f1f1;margin-bottom:8px;}
+.unit-copy{font-size:12px;line-height:1.7;color:#a4a4a4;margin-bottom:12px;}
+.unit-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.unit-tag{
+  padding:5px 8px;border-radius:999px;font-size:10px;font-weight:700;line-height:1;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#ececec;
+}
+.system-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.system-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#141414;
+  border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;
+}
+.system-kicker{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#c9a870;margin-bottom:8px;}
+.system-title{font-size:18px;font-weight:900;color:#f1f1f1;margin-bottom:8px;}
+.system-copy{font-size:12px;line-height:1.7;color:#a4a4a4;margin-bottom:12px;}
+.system-list{display:grid;gap:6px;}
+.system-row{
+  display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+  padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+}
+.system-row strong{font-size:12px;color:#ececec;}
+.system-row span{font-size:11px;line-height:1.55;color:#909090;text-align:right;}
+.upgrade-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.upgrade-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#141414;
+  border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;
+}
+.upgrade-name{font-size:18px;font-weight:900;color:#f1f1f1;margin-bottom:12px;}
+.tier-stack{display:grid;gap:10px;}
+.tier-block{
+  padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+}
+.tier-label{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#f2dfba;margin-bottom:6px;}
+.tier-title{font-size:13px;font-weight:800;color:#ededed;margin-bottom:6px;}
+.tier-copy{font-size:11px;line-height:1.65;color:#989898;}
+.screen-mock{
+  background:
+    radial-gradient(circle at 18% 16%, rgba(201,168,112,.08), transparent 22%),
+    radial-gradient(circle at 82% 18%, rgba(185,227,200,.08), transparent 20%),
+    linear-gradient(180deg,#151515,#0f0f0f);
+  border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:16px;overflow:hidden;
+}
+.screen-topbar,.screen-bottombar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;z-index:1;}
+.screen-pill{
+  padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  font-size:10px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:#ececec;
+}
+.screen-arena{
+  position:relative;height:320px;margin:16px 0;border-radius:18px;overflow:hidden;
+  background:
+    radial-gradient(circle at 25% 28%, rgba(201,168,112,.07), transparent 18%),
+    radial-gradient(circle at 72% 52%, rgba(185,227,200,.07), transparent 18%),
+    linear-gradient(180deg,#1a1a1a,#101010);
+  border:1px solid rgba(255,255,255,.06);
+}
+.screen-arena::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:36px 36px;opacity:.45;
+}
+.screen-lane{
+  position:absolute;height:14px;border-radius:999px;background:linear-gradient(90deg,rgba(218,218,218,.18),rgba(218,218,218,.28));
+  border:1px solid rgba(255,255,255,.08);
+}
+.screen-point{
+  position:absolute;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.1);font-size:9px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;
+}
+.screen-point.tower{background:radial-gradient(circle at 35% 35%, #f2dfba 0%, #b79057 44%, #44331f 100%);color:#171717;}
+.screen-point.enemy{background:radial-gradient(circle at 35% 35%, #ffd2d2 0%, #c26262 44%, #3b1a1a 100%);color:#fff2f2;}
+.screen-point.route{background:radial-gradient(circle at 35% 35%, #cce6d5 0%, #4db87a 44%, #183123 100%);color:#effff4;}
+.screen-sidepanel{
+  position:absolute;right:14px;top:14px;width:210px;padding:12px;border-radius:16px;
+  background:rgba(11,11,11,.84);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);
+}
+.screen-panel-title{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#f2dfba;margin-bottom:10px;}
+.screen-panel-list{display:grid;gap:8px;}
+.screen-panel-item{
+  padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+}
+.screen-panel-item strong{display:block;font-size:12px;color:#ececec;margin-bottom:4px;}
+.screen-panel-item span{font-size:11px;line-height:1.55;color:#9a9a9a;}
+.progress-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+.progress-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),#141414;
+  border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;
+}
+.progress-stage{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#c9a870;margin-bottom:8px;}
+.progress-card h4{font-size:17px;font-weight:900;color:#f1f1f1;margin-bottom:8px;}
+.progress-card p{font-size:12px;line-height:1.7;color:#9f9f9f;}
+.loop-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+.loop-step{
+  border:1px solid rgba(255,255,255,.07);border-radius:18px;background:#141414;padding:16px;min-height:160px;
+}
+.loop-step-num{font-size:12px;font-weight:900;color:#f2dfba;margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;}
+.loop-step h4{font-size:16px;font-weight:900;margin-bottom:8px;color:#f0f0f0;}
+.loop-step p{font-size:12px;line-height:1.7;color:#9f9f9f;}
 .mini-list{display:grid;gap:10px;}
 .mini-row{
   display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
@@ -406,6 +584,9 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
   .control-grid,.content-grid,.traits-grid{grid-template-columns:1fr;}
   .metrics-grid{grid-template-columns:repeat(2,1fr);}
   .wallet-upgrade-grid{grid-template-columns:1fr;}
+  .wallet-plan-panels{grid-template-columns:1fr;}
+  .concept-grid,.loop-grid,.progress-grid{grid-template-columns:1fr;}
+  .system-grid,.upgrade-grid{grid-template-columns:1fr;}
 }
 @media (max-width:780px){
   nav{padding:12px 20px;}
@@ -437,6 +618,7 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
   .item-modal-title{font-size:24px;}
   .mode-tabs{gap:8px;}
   .mode-tab{width:100%;justify-content:center;}
+  .palette-grid,.unit-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -481,6 +663,7 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
     <div class="mode-tabs">
       <button type="button" class="mode-tab active" data-mode-tab="analyzer">Team Analyzer</button>
       <button type="button" class="mode-tab" data-mode-tab="wallet">Wallet Advisor</button>
+      <button type="button" class="mode-tab" data-mode-tab="defence">Cavern Defence</button>
     </div>
     <div class="mode-page active" id="analyzerModePanel">
     <div class="panel">
@@ -510,7 +693,7 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
         <div class="field-grid">
           <div class="field full">
             <label for="walletInput">TON Wallet</label>
-            <input id="walletInput" value="UQBrMGL8VMThMGF2fUE6rVoxIX79A9g4NIRA5wX7SUGD3iND" placeholder="UQ...">
+            <input id="walletInput" placeholder="UQ...">
           </div>
         </div>
         <div class="actions">
@@ -524,6 +707,17 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
             <div class="status-flag"><img src="c-logo-nobg.png" alt="Cavern"></div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="mode-page" id="defenceModePanel">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Cavern Defence</h3>
+        </div>
+        <p>
+          A future endless tower defense set inside the Cavern tribe identity. The goal of this tab is to shape the visual language,
+          route-building logic, towers, monsters, and the first playable fantasy before production starts.
+        </p>
       </div>
     </div>
   </div>
@@ -557,9 +751,9 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
         <div class="v">Filtered from the wallet address.</div>
       </div>
       <div class="metric">
-        <div class="n" id="walletCurrentBestScore">0 PWR</div>
-        <div class="k">Best Current Team</div>
-        <div class="v">Total score of the strongest owned lineup.</div>
+        <div class="n" id="walletFinalTeamScore">0 PWR</div>
+        <div class="k">Final Team Score</div>
+        <div class="v">Best total score from owned plus listed market orcs.</div>
       </div>
       <div class="metric">
         <div class="n" id="walletMarketCount">0</div>
@@ -567,9 +761,9 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
         <div class="v">Live market candidates checked right now.</div>
       </div>
       <div class="metric">
-        <div class="n" id="walletBestDelta">0 PWR</div>
-        <div class="k">Best +1 Upgrade</div>
-        <div class="v">Maximum total-score gain from one purchase.</div>
+        <div class="n" id="walletBuyCount">0</div>
+        <div class="k">Orcs To Buy</div>
+        <div class="v" id="walletBuyCostText">Current plan buy cost: 0 TON.</div>
       </div>
     </div>
   </div>
@@ -581,7 +775,7 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
   <div class="wrap">
     <div class="lbl">Current Team</div>
     <div class="ttl">Best <em>Owned Team</em></div>
-    <div class="desc" id="walletCurrentTeamMeta">Analyze a wallet to see the best current Cavern lineup.</div>
+    <div class="desc" id="walletCurrentTeamMeta">Analyze a wallet to see the strongest team from already owned Cavern orcs.</div>
     <div class="variant-card" id="walletCurrentTeamCard">
       <div class="empty-state">No wallet analysis yet.</div>
     </div>
@@ -592,11 +786,11 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
 
 <section id="wallet-upgrade" class="mode-section" data-mode-section="wallet">
   <div class="wrap">
-    <div class="lbl">Market Upgrade</div>
-    <div class="ttl">Best <em>Single Purchase</em></div>
-    <div class="desc" id="walletUpgradeMeta">The advisor will compare listed Cavern orcs and find the strongest one-orc upgrade for the wallet.</div>
+    <div class="lbl">Best Team Plan</div>
+    <div class="ttl">Strongest <em>Keep + Buy Plan</em></div>
+    <div class="desc" id="walletUpgradeMeta">The advisor will build the strongest possible Cavern team from owned orcs plus listed market candidates, then show what to keep and what to buy.</div>
     <div class="variant-card" id="walletUpgradeCard">
-      <div class="empty-state">Analyze a wallet to get the best single market purchase recommendation.</div>
+      <div class="empty-state">Analyze a wallet to get the strongest combined team plan and the list of Cavern orcs to buy.</div>
     </div>
   </div>
 </section>
@@ -613,6 +807,490 @@ h1.ht{font-size:clamp(82px,12.8vw,176px);font-weight:900;letter-spacing:1px;line
     </div>
   </div>
 </section>
+
+<div class="hr"></div>
+
+<section id="defence-overview" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Vibe City · Ziggurat</div>
+    <div class="ttl">Cavern <em>Defence</em></div>
+    <div class="desc">
+      Endless siege meets route-shaping defense. The player is not just placing towers, but acting as the Cavern chief who rebuilds the
+      underground path, traps the enemy inside kill corridors, and holds the tribe's deep fortress through an endless AI-generated assault.
+    </div>
+    <div class="concept-grid">
+      <div class="concept-stack">
+        <div class="concept-card">
+          <h3>Core Fantasy</h3>
+          <ul>
+            <li>You defend a living Cavern stronghold instead of a generic lane.</li>
+            <li>Each wave lets you reshape the route with stone gates, bone barricades, rune pivots, and cave choke-points.</li>
+            <li>The siege is endless, but the map keeps evolving, so every session feels like a surviving ritual rather than a fixed puzzle.</li>
+            <li>Cavern identity leads everything: pale stone, fungal glow, tribal metal, ash, bone, and ritual gold.</li>
+          </ul>
+        </div>
+        <div class="concept-card">
+          <h3>Visual Pillars</h3>
+          <div class="palette-grid">
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#9f9f9f"></div>
+              <div class="palette-name">#9f9f9f</div>
+              <div class="palette-meta">Main neutral gray for UI stone, soft metal, and broad surface balance.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#848484"></div>
+              <div class="palette-name">#848484</div>
+              <div class="palette-meta">Core shadow-gray for structure depth and quieter tower detailing.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#b3aba9"></div>
+              <div class="palette-name">#b3aba9</div>
+              <div class="palette-meta">Warm ash tone for cracked route tiles, carved blocks, and pale map surfaces.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#2c2930"></div>
+              <div class="palette-name">#2c2930</div>
+              <div class="palette-meta">Deep cavern base for voids, roots, banner cloth, and strongest shadow masses.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#c1bac1"></div>
+              <div class="palette-name">#c1bac1</div>
+              <div class="palette-meta">Pale highlight for bone trim, soft edge lighting, and cleaner readable materials.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#bbb6bd"></div>
+              <div class="palette-name">#bbb6bd</div>
+              <div class="palette-meta">Light muted accent for route contrast, tower readability, and polished interface panels.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#27314e"></div>
+              <div class="palette-name">#27314e</div>
+              <div class="palette-meta">Main magical accent for blue fire, rune glow, and cold tower energy.</div>
+            </div>
+            <div class="palette-chip">
+              <div class="palette-swatch" style="background:#b3ada7"></div>
+              <div class="palette-name">#b3ada7</div>
+              <div class="palette-meta">Secondary route stone and ash-bone bridge tone for lighter cave geometry.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="concept-stack">
+        <div class="concept-card">
+          <h3>Current Visual Board</h3>
+          <div class="defence-map">
+            <img src="cavern-defence-board.png" alt="Cavern Defence concept board" loading="lazy">
+            <div class="defence-map-legend">
+              <span class="legend-pill">Light Route Blocks</span>
+              <span class="legend-pill">Blue Fire Accent</span>
+              <span class="legend-pill">Banner Only</span>
+              <span class="legend-pill">No Top HUD</span>
+            </div>
+            <div class="defence-board-note">
+              This board is now the main visual anchor for the project: lighter ash-stone routes, stronger blue fire accents, banner-only right side,
+              and a calmer monochrome identity closer to the Cavern site palette.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="defence-route-systems" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Route Modules</div>
+    <div class="ttl">Path Building <em>Systems</em></div>
+    <div class="system-grid">
+      <article class="system-card">
+        <div class="system-kicker">Route Logic</div>
+        <div class="system-title">Pale Stone Blocks</div>
+        <div class="system-copy">The basic route extension piece. Cheap, reliable, and used to create long lanes or emergency detours during endless escalation.</div>
+        <div class="system-list">
+          <div class="system-row"><strong>Best Use</strong><span>Stretch long lines for Ballista towers.</span></div>
+          <div class="system-row"><strong>Risk</strong><span>Too much greed opens weak corners for rushers.</span></div>
+          <div class="system-row"><strong>Style</strong><span>Carved cave bone mixed with basalt joints.</span></div>
+        </div>
+      </article>
+      <article class="system-card">
+        <div class="system-kicker">Dynamic Control</div>
+        <div class="system-title">Jaw Gates</div>
+        <div class="system-copy">Open or close these gates between waves to force enemies into a different loop. Some elite waves may even pressure a specific gate lane.</div>
+        <div class="system-list">
+          <div class="system-row"><strong>Best Use</strong><span>Re-route enemies into already buffed tower pockets.</span></div>
+          <div class="system-row"><strong>Risk</strong><span>Closing too aggressively may shorten the lane too much.</span></div>
+          <div class="system-row"><strong>Style</strong><span>Stone fangs, ritual hinges, hidden teeth trap.</span></div>
+        </div>
+      </article>
+      <article class="system-card">
+        <div class="system-kicker">Map Modifier</div>
+        <div class="system-title">Spore Hollows</div>
+        <div class="system-copy">Special route pockets that add fungal aura rules. They can heal tribe structures, feed economy towers, or mutate monsters when left uncontrolled.</div>
+        <div class="system-list">
+          <div class="system-row"><strong>Best Use</strong><span>Pair with support and harvest towers.</span></div>
+          <div class="system-row"><strong>Risk</strong><span>Can become enemy mutation zones in late waves.</span></div>
+          <div class="system-row"><strong>Style</strong><span>Soft green glow, spores, wet cavern flora.</span></div>
+        </div>
+      </article>
+      <article class="system-card">
+        <div class="system-kicker">Pivot Nodes</div>
+        <div class="system-title">Rune Switches</div>
+        <div class="system-copy">Temporary route pivots that can send enemies left or right depending on the wave type. They turn the map into a tactical routing puzzle instead of a static lane.</div>
+        <div class="system-list">
+          <div class="system-row"><strong>Best Use</strong><span>Separate swarms from tanks into different kill zones.</span></div>
+          <div class="system-row"><strong>Risk</strong><span>Wrong switch choice can bypass your main defense.</span></div>
+          <div class="system-row"><strong>Style</strong><span>Cold rune circles with steel and ash dust.</span></div>
+        </div>
+      </article>
+      <article class="system-card">
+        <div class="system-kicker">Endless Pressure</div>
+        <div class="system-title">Collapse Zones</div>
+        <div class="system-copy">In late waves some path segments become unstable. The player must either reinforce them or redesign the route around a collapse event.</div>
+        <div class="system-list">
+          <div class="system-row"><strong>Best Use</strong><span>Forces adaptation and keeps endless mode fresh.</span></div>
+          <div class="system-row"><strong>Risk</strong><span>Can destroy over-invested corridors.</span></div>
+          <div class="system-row"><strong>Style</strong><span>Cracked stone, dust bursts, molten seams.</span></div>
+        </div>
+      </article>
+      <article class="system-card">
+        <div class="system-kicker">Chief Layer</div>
+        <div class="system-title">Relic Altars</div>
+        <div class="system-copy">Optional route modules that trade space for power. When placed in the path grid they unlock temporary tribal doctrines like fear pulses, bonus gold, or route-wide buffs.</div>
+        <div class="system-list">
+          <div class="system-row"><strong>Best Use</strong><span>High-risk endless scaling and identity moments.</span></div>
+          <div class="system-row"><strong>Risk</strong><span>Takes space from tower platforms or safer loops.</span></div>
+          <div class="system-row"><strong>Style</strong><span>Chief gold, rune ash, sacred bone crown motifs.</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="defence-loop" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Endless Session Loop</div>
+    <div class="ttl">How A <em>Run</em> Works</div>
+    <div class="loop-grid">
+      <div class="loop-step">
+        <div class="loop-step-num">01</div>
+        <h4>Scout the Breach</h4>
+        <p>The cave opens with one breach lane and several blocked pockets. The player reads the terrain, initial enemy tags, and first resource nodes.</p>
+      </div>
+      <div class="loop-step">
+        <div class="loop-step-num">02</div>
+        <h4>Shape the Route</h4>
+        <p>Before or between waves the player extends the path with pale stone blocks, trap corridors, fungal forks, and tribal gates.</p>
+      </div>
+      <div class="loop-step">
+        <div class="loop-step-num">03</div>
+        <h4>Anchor Towers</h4>
+        <p>Cavern towers are placed on carved platforms. Some are raw damage, some spread fear, some harvest spores, and some reward longer enemy travel.</p>
+      </div>
+      <div class="loop-step">
+        <div class="loop-step-num">04</div>
+        <h4>Survive Forever</h4>
+        <p>The run never ends. Enemies mutate, map rules evolve, and the player keeps rebuilding the route to hold the chief's undercity one wave longer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="defence-towers" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Tower Set</div>
+    <div class="ttl">First <em>Cavern Towers</em></div>
+    <div class="unit-grid">
+      <article class="unit-card">
+        <div class="unit-type">Damage Core</div>
+        <div class="unit-name">Bone Ballista</div>
+        <div class="unit-copy">A tribal heavy launcher built from carved rib-bone and rune steel. Excels at deleting frontliners and armored elites on long straight paths.</div>
+        <div class="unit-tags"><span class="unit-tag">Pierce</span><span class="unit-tag">Long Lane Bonus</span><span class="unit-tag">Anti-Elite</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Area Damage</div>
+        <div class="unit-name">Spore Furnace</div>
+        <div class="unit-copy">A fungal kiln that releases burning spores into clustered enemies. Better when routes are curled into loops and choke-points.</div>
+        <div class="unit-tags"><span class="unit-tag">Splash</span><span class="unit-tag">Burn</span><span class="unit-tag">Loop Control</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Control</div>
+        <div class="unit-name">Totem of Dread</div>
+        <div class="unit-copy">A chief-era fear idol that makes enemies slow, panic, or lose formation. Used to keep waves inside kill corridors.</div>
+        <div class="unit-tags"><span class="unit-tag">Fear</span><span class="unit-tag">Slow</span><span class="unit-tag">Formation Break</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Support</div>
+        <div class="unit-name">Runic Beacon</div>
+        <div class="unit-copy">A pale obelisk that amplifies nearby towers through cold rune light. It turns a small defense pocket into a ritual execution zone.</div>
+        <div class="unit-tags"><span class="unit-tag">Buff Aura</span><span class="unit-tag">Synergy</span><span class="unit-tag">Anchor Tower</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Trap Layer</div>
+        <div class="unit-name">Jaw Gate</div>
+        <div class="unit-copy">A cave gate with hidden stone teeth. It can be opened to redirect the route or closed to punish enemies that pass through a narrow choke.</div>
+        <div class="unit-tags"><span class="unit-tag">Route Tool</span><span class="unit-tag">Burst Trap</span><span class="unit-tag">Choke Point</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Economy</div>
+        <div class="unit-name">Mushroom Excavator</div>
+        <div class="unit-copy">A support growth structure that converts long-lasting kills near fungal zones into extra resource drops, rewarding efficient route shaping.</div>
+        <div class="unit-tags"><span class="unit-tag">Economy</span><span class="unit-tag">Harvest</span><span class="unit-tag">Endless Scaling</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="defence-upgrades" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Upgrade Paths</div>
+    <div class="ttl">Tower <em>Growth</em> By Tier</div>
+    <div class="upgrade-grid">
+      <article class="upgrade-card">
+        <div class="upgrade-name">Bone Ballista</div>
+        <div class="tier-stack">
+          <div class="tier-block">
+            <div class="tier-label">Tier I</div>
+            <div class="tier-title">Rib Launcher</div>
+            <div class="tier-copy">Low-cost early anti-armor line holder. Great when paired with long straight basalt lanes.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier II</div>
+            <div class="tier-title">Chiefbreaker Harpoon</div>
+            <div class="tier-copy">Adds pierce and execution damage against elite units already affected by fear or rune debuffs.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier III</div>
+            <div class="tier-title">Ancestor Spine Cannon</div>
+            <div class="tier-copy">Launches massive rune-bone bolts that crack armor and mark the lane so nearby towers deal bonus damage.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Gameplay Role</div>
+            <div class="tier-title">Lane Execution Tower</div>
+            <div class="tier-copy">Best on long straight lines, elite targets, and boss lanes. The whole upgrade line is about rewarding planned route geometry.</div>
+          </div>
+        </div>
+      </article>
+      <article class="upgrade-card">
+        <div class="upgrade-name">Spore Furnace</div>
+        <div class="tier-stack">
+          <div class="tier-block">
+            <div class="tier-label">Tier I</div>
+            <div class="tier-title">Ash Kiln</div>
+            <div class="tier-copy">Creates steady burn and splash around choke-points.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier II</div>
+            <div class="tier-title">Venom Bloom Chamber</div>
+            <div class="tier-copy">Burn stacks mutate into poison clouds if enemies stay too long in the same loop.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier III</div>
+            <div class="tier-title">Cathedral of Spores</div>
+            <div class="tier-copy">Turns an entire kill pocket into a hazard zone that rewards route looping, fear control, and swarm stacking.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Gameplay Role</div>
+            <div class="tier-title">Loop Pressure Tower</div>
+            <div class="tier-copy">This line is your main answer to swarm density and long looping routes. It becomes stronger the longer enemies stay grouped.</div>
+          </div>
+        </div>
+      </article>
+      <article class="upgrade-card">
+        <div class="upgrade-name">Totem of Dread</div>
+        <div class="tier-stack">
+          <div class="tier-block">
+            <div class="tier-label">Tier I</div>
+            <div class="tier-title">Whisper Totem</div>
+            <div class="tier-copy">Applies a light slow and panic tick. Early control tool that keeps fast runners from slipping past short routes.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier II</div>
+            <div class="tier-title">Totem of Submission</div>
+            <div class="tier-copy">Upgrades into stronger fear pulses. Enemies briefly lose formation, exposing swarms to splash damage and lanes to execution shots.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier III</div>
+            <div class="tier-title">Totem of Deep Winter</div>
+            <div class="tier-copy">Converts panic into a heavier slow field. Strong against armored waves and route-breaking enemies moving through choke-points.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier IV</div>
+            <div class="tier-title">Totem of the Chief Below</div>
+            <div class="tier-copy">Ultimate control tower. Creates a ritual zone where enemies are slowed, marked, and periodically forced back into the kill corridor.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Gameplay Role</div>
+            <div class="tier-title">Primary Slow / Control Line</div>
+            <div class="tier-copy">This is the main slowdown tower family. It should be the core answer to speed waves, formation breaking, and keeping endless routes manageable.</div>
+          </div>
+        </div>
+      </article>
+      <article class="upgrade-card">
+        <div class="upgrade-name">Runic Beacon</div>
+        <div class="tier-stack">
+          <div class="tier-block">
+            <div class="tier-label">Tier I</div>
+            <div class="tier-title">Beacon of Guidance</div>
+            <div class="tier-copy">Basic amplification aura for nearby towers and route modules. The safest way to strengthen a compact defense pocket.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier II</div>
+            <div class="tier-title">Rune Prism</div>
+            <div class="tier-copy">Adds target marking so nearby towers focus the most dangerous units first and gain improved efficiency against marked elites.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier III</div>
+            <div class="tier-title">Chief's Resonance Obelisk</div>
+            <div class="tier-copy">Turns the whole defense pocket into a ritual zone, boosting tower output and creating a stronger answer to boss waves.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Gameplay Role</div>
+            <div class="tier-title">Pocket Amplifier</div>
+            <div class="tier-copy">This line is not about direct damage. It is about multiplying the value of other towers, especially around fixed choke-points.</div>
+          </div>
+        </div>
+      </article>
+      <article class="upgrade-card">
+        <div class="upgrade-name">Jaw Gate</div>
+        <div class="tier-stack">
+          <div class="tier-block">
+            <div class="tier-label">Tier I</div>
+            <div class="tier-title">Stone Maw</div>
+            <div class="tier-copy">Simple route gate with burst damage on narrow passage. Best for early choke-point control and emergency reroutes.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier II</div>
+            <div class="tier-title">Bone Grinder</div>
+            <div class="tier-copy">Adds stronger bite damage and bleed on enemies forced through the same lane repeatedly.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier III</div>
+            <div class="tier-title">Abyssal Lockjaw</div>
+            <div class="tier-copy">Becomes a major route-control structure that can temporarily seal a branch and punish anything trapped inside.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Gameplay Role</div>
+            <div class="tier-title">Trap + Route Hybrid</div>
+            <div class="tier-copy">This line sits between map editing and tower defense. It should feel like a tactical decision, not just a damage building.</div>
+          </div>
+        </div>
+      </article>
+      <article class="upgrade-card">
+        <div class="upgrade-name">Mushroom Excavator</div>
+        <div class="tier-stack">
+          <div class="tier-block">
+            <div class="tier-label">Tier I</div>
+            <div class="tier-title">Spore Harvester</div>
+            <div class="tier-copy">Collects extra resources from nearby kills and rewards stable route control.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier II</div>
+            <div class="tier-title">Root Distillery</div>
+            <div class="tier-copy">Converts long-lasting kill zones into stronger income and occasional healing bursts for nearby cave modules.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Tier III</div>
+            <div class="tier-title">Elder Mycelium Vault</div>
+            <div class="tier-copy">Late endless-economy structure that powers up both resource gain and ritual support effects in fungal sectors.</div>
+          </div>
+          <div class="tier-block">
+            <div class="tier-label">Gameplay Role</div>
+            <div class="tier-title">Endless Economy Engine</div>
+            <div class="tier-copy">This line exists so long runs can scale without becoming only about raw damage. It rewards stable, efficient route planning.</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="defence-monsters" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Monster Set</div>
+    <div class="ttl">First <em>Enemy Families</em></div>
+    <div class="unit-grid">
+      <article class="unit-card">
+        <div class="unit-type">Rusher</div>
+        <div class="unit-name">Ash Runners</div>
+        <div class="unit-copy">Fast surface raiders that punish greedy long routes. They pressure the player into building layered slow and fear tools early.</div>
+        <div class="unit-tags"><span class="unit-tag">Role: Runner</span><span class="unit-tag">Fast</span><span class="unit-tag">Wave Opener</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Tank</div>
+        <div class="unit-name">Siege Tuskers</div>
+        <div class="unit-copy">Massive cave-breakers covered in bone plating. They absorb pressure and create windows for weaker enemies to slip through.</div>
+        <div class="unit-tags"><span class="unit-tag">Role: Tank</span><span class="unit-tag">Armor</span><span class="unit-tag">Frontline</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Support Enemy</div>
+        <div class="unit-name">Glow Leeches</div>
+        <div class="unit-copy">Parasites that attach to bigger monsters and regenerate them under cave light, forcing the player to prioritize the right targets.</div>
+        <div class="unit-tags"><span class="unit-tag">Role: Healer</span><span class="unit-tag">Heal</span><span class="unit-tag">Priority Target</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Route Counter</div>
+        <div class="unit-name">Tunnel Burrowers</div>
+        <div class="unit-copy">These creatures damage or bypass parts of the route, challenging the core fantasy and forcing constant rebuild decisions.</div>
+        <div class="unit-tags"><span class="unit-tag">Role: Route Breaker</span><span class="unit-tag">Path Breaker</span><span class="unit-tag">Adaptation Check</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Swarm</div>
+        <div class="unit-name">Spite Bats</div>
+        <div class="unit-copy">Flying cave vermin that ignore parts of the lane and test anti-air or aura coverage. They stop the design from becoming ground-only.</div>
+        <div class="unit-tags"><span class="unit-tag">Role: Flying Swarm</span><span class="unit-tag">Air</span><span class="unit-tag">Swarm</span></div>
+      </article>
+      <article class="unit-card">
+        <div class="unit-type">Boss Wave</div>
+        <div class="unit-name">Sun-Eater Pilgrim</div>
+        <div class="unit-copy">A ritual invader carrying a relic of the surface. It changes nearby enemies, distorts route sections, and serves as a late-wave identity boss.</div>
+        <div class="unit-tags"><span class="unit-tag">Role: Boss</span><span class="unit-tag">Boss</span><span class="unit-tag">Aura Mutator</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="defence-progress" class="mode-section" data-mode-section="defence">
+  <div class="wrap">
+    <div class="lbl">Wave Doctrine</div>
+    <div class="ttl">Enemy <em>Progression</em> Over Time</div>
+    <div class="progress-grid">
+      <article class="progress-card">
+        <div class="progress-stage">Stage 01</div>
+        <h4>Scout Pressure</h4>
+        <p>Fast Ash Runners and light swarms test whether the player understands route length, first choke-points, and early support towers.</p>
+      </article>
+      <article class="progress-card">
+        <div class="progress-stage">Stage 02</div>
+        <h4>Armor + Support</h4>
+        <p>Siege Tuskers and Glow Leeches force target priority. The player must balance anti-elite pressure with control and splash damage.</p>
+      </article>
+      <article class="progress-card">
+        <div class="progress-stage">Stage 03</div>
+        <h4>Route Counterplay</h4>
+        <p>Tunnel Burrowers and flying Spite Bats attack the current strategy itself, forcing rebuilds, anti-air layers, and alternate lane planning.</p>
+      </article>
+      <article class="progress-card">
+        <div class="progress-stage">Stage 04</div>
+        <h4>Ritual Siege</h4>
+        <p>Boss entities like the Sun-Eater Pilgrim modify the map, mutate nearby enemies, and create rule-breaking waves that define the endless identity.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
 
 <div class="item-modal" id="itemModal" aria-hidden="true">
   <div class="item-modal-card" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
@@ -727,7 +1405,6 @@ const BRACELET_TEAM_BONUS = { 4: 400 };
 const LOGO_TEAM_BONUS = { 4: 400, 5: 500, 6: 700, 7: 1000 };
 const FULL_TEAM_BONUS_PER_ORC = 50;
 const REQUEST_TIMEOUT_MS = 20000;
-const MARKET_CACHE_TTL_MS = 5 * 60 * 1000;
 const WALLET_COLLECTION_NAME = "Unstoppable Tribe from ZarGates";
 const TEAM_LOGO_KEYS = new Set([
   "zargates", "bitcoin", "telegram", "ton", "tribo games", "dollar", "eth", "rub", "elephant"
@@ -744,8 +1421,7 @@ const state = {
   walletItems: [],
   walletMarketItems: [],
   walletCurrentTeam: null,
-  walletBestUpgrade: null,
-  walletMarketCache: null
+  walletPlan: null
 };
 
 function norm(value) {
@@ -1250,18 +1926,42 @@ function formatTokenLabel(token) {
   return token.split(" ").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
 }
 
-function getFetchProgress(checkedCount, totalCount) {
-  if (!totalCount || totalCount <= 0) {
-    return 0;
+function getRangedProgress(current, total, start, end) {
+  if (!total || total <= 0) {
+    return start;
   }
-  return clamp((checkedCount / totalCount) * 72, 0, 72);
+  return clamp(start + (current / total) * (end - start), start, end);
+}
+
+function getAdaptivePageProgress(page, start, end) {
+  const safePage = Math.max(0, Number(page) || 0);
+  const span = Math.max(0, end - start);
+  const eased = 1 - Math.exp(-safePage / 4.5);
+  return clamp(start + eased * span, start, end);
+}
+
+function getFetchProgress(checkedCount, totalCount) {
+  return getRangedProgress(checkedCount, totalCount, 0, 72);
 }
 
 function getBuildProgress(step, total) {
-  if (!total) {
-    return 78;
-  }
-  return clamp(76 + (step / total) * 22, 76, 98);
+  return getRangedProgress(step, total, 76, 98);
+}
+
+function getWalletOwnedFetchProgress(page) {
+  return getAdaptivePageProgress(page, 0, 22);
+}
+
+function getWalletOwnedBuildProgress(step, total) {
+  return getRangedProgress(step, total, 24, 46);
+}
+
+function getWalletMarketFetchProgress(checkedCount, totalCount) {
+  return getRangedProgress(checkedCount, totalCount, 48, 78);
+}
+
+function getWalletPlanBuildProgress(step, total) {
+  return getRangedProgress(step, total, 80, 98);
 }
 
 function resetInitialViewport() {
@@ -2182,6 +2882,13 @@ function formatTonPrice(item) {
     : "No price";
 }
 
+function formatTonAmount(value) {
+  const numeric = Number(value || 0);
+  return Number.isFinite(numeric) && numeric > 0
+    ? `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(numeric)} TON`
+    : "0 TON";
+}
+
 async function fetchWalletCavernItems(walletAddress, config, onProgress) {
   const items = [];
   const seen = new Set();
@@ -2280,23 +2987,27 @@ async function fetchListedWalletMarketItems(config, onProgress) {
   return matchedItems;
 }
 
-function renderWalletSummary(walletItems, currentTeam, marketItems, bestUpgrade) {
+function renderWalletSummary(walletItems, currentTeam, marketItems, walletPlan) {
+  const finalScore = walletPlan?.finalEntry?.result?.totalScore || currentTeam?.result?.totalScore || 0;
+  const buyCount = walletPlan?.buyCount || 0;
+  const buyCost = walletPlan?.buyCost || 0;
   document.getElementById("walletOwnedCount").textContent = formatNumber(walletItems.length);
-  document.getElementById("walletCurrentBestScore").textContent = `${formatNumber(currentTeam?.result?.totalScore || 0)} PWR`;
+  document.getElementById("walletFinalTeamScore").textContent = `${formatNumber(finalScore)} PWR`;
   document.getElementById("walletMarketCount").textContent = formatNumber(marketItems.length);
-  document.getElementById("walletBestDelta").textContent = bestUpgrade ? `+${formatNumber(bestUpgrade.delta)} PWR` : "0 PWR";
+  document.getElementById("walletBuyCount").textContent = formatNumber(buyCount);
+  document.getElementById("walletBuyCostText").textContent = `Current plan buy cost: ${formatTonAmount(buyCost)}.`;
 }
 
-function getWalletTeamBadges(item, entry) {
-  const badges = [];
+function getWalletTeamBadges(item, entry, extraBadges = []) {
+  const badges = extraBadges.map((badge) => `<span class="slot-pill ${escapeHtml(badge.className)}">${escapeHtml(badge.label)}</span>`);
   const earring = getAttributeValue(item, "Earrings");
   const bracelet = getAttributeValue(item, "Bracelet");
   if (item.numberPower > 0) badges.push('<span class="slot-pill number">Number</span>');
   if (item.localComboBonus > 0) badges.push('<span class="slot-pill combo">Combo</span>');
-  if (earring && entry.result.synergyDetails.some((detail) => detail.trait === `Earrings: ${earring}`)) {
+  if (earring && entry?.result?.synergyDetails?.some((detail) => detail.trait === `Earrings: ${earring}`)) {
     badges.push('<span class="slot-pill earring">Earring</span>');
   }
-  if (bracelet && entry.result.synergyDetails.some((detail) => detail.trait === `Bracelet: ${bracelet}`)) {
+  if (bracelet && entry?.result?.synergyDetails?.some((detail) => detail.trait === `Bracelet: ${bracelet}`)) {
     badges.push('<span class="slot-pill bracelet">Bracelet</span>');
   }
   return badges.join("");
@@ -2306,8 +3017,8 @@ function renderWalletCurrentTeam(entry) {
   const root = document.getElementById("walletCurrentTeamCard");
   const meta = document.getElementById("walletCurrentTeamMeta");
   if (!entry || !entry.result.coverage) {
-    root.innerHTML = `<div class="empty-state">This wallet does not have enough Cavern orcs to build a team yet.</div>`;
-    meta.textContent = "The wallet currently has no complete Cavern recommendation.";
+    root.innerHTML = `<div class="empty-state">This wallet does not have enough owned Cavern orcs to build a current team yet.</div>`;
+    meta.textContent = "No owned Cavern lineup is available yet.";
     return;
   }
 
@@ -2362,116 +3073,244 @@ function renderWalletOwnedGrid(items) {
 function buildWalletMarketShortlist(items) {
   const selected = new Map();
   const overall = [...items].sort((a, b) => b.score - a.score || a.salePriceValue - b.salePriceValue);
-  overall.slice(0, 30).forEach((item) => selected.set(item.address, item));
+  overall.slice(0, 36).forEach((item) => selected.set(item.address, item));
   EMOTIONS.forEach((emotion) => {
     overall
       .filter((item) => item.emotion === emotion)
-      .slice(0, 12)
+      .slice(0, 14)
       .forEach((item) => selected.set(item.address, item));
   });
-  return [...selected.values()].slice(0, 90);
+  return [...selected.values()].slice(0, 110);
 }
 
-function buildWalletUpgradeReasons(baseEntry, upgradedEntry, candidate) {
+function evaluateWalletPlanEntry(team, config) {
+  const result = evaluateTeam(team, config);
+  const keepItems = team.filter((item) => item && item.source === "owned");
+  const buyItems = team.filter((item) => item && item.source === "market");
+  const buyCost = buyItems.reduce((sum, item) => sum + Number(item.salePriceValue || 0), 0);
+  return {
+    team,
+    result,
+    keepItems,
+    buyItems,
+    buyCount: buyItems.length,
+    buyCost
+  };
+}
+
+function compareWalletPlanEntries(a, b) {
+  return (
+    b.result.coverage - a.result.coverage
+    || b.result.totalScore - a.result.totalScore
+    || a.buyCount - b.buyCount
+    || a.buyCost - b.buyCost
+    || b.result.synergyScore - a.result.synergyScore
+  );
+}
+
+function buildWalletPlanReasons(currentEntry, finalEntry, candidate) {
   const reasons = [];
-  const replaced = baseEntry.team[EMOTIONS.indexOf(candidate.emotion)];
-  reasons.push(replaced ? `Upgrades ${candidate.emotion} slot` : `Closes missing ${candidate.emotion} slot`);
-  const baseMap = new Map(baseEntry.result.synergyDetails.map((detail) => [detail.trait, detail]));
-  for (const detail of upgradedEntry.result.synergyDetails) {
+  const currentSlot = currentEntry?.team?.[EMOTIONS.indexOf(candidate.emotion)] || null;
+  if (!currentSlot) {
+    reasons.push(`Closes ${candidate.emotion} slot`);
+  } else {
+    reasons.push(`Upgrades ${candidate.emotion} slot over ${currentSlot.name}`);
+    const slotGain = candidate.power - currentSlot.power;
+    if (slotGain > 0) {
+      reasons.push(`Adds +${formatNumber(slotGain)} base PWR before team bonuses`);
+    }
+  }
+  const baseMap = new Map((currentEntry?.result?.synergyDetails || []).map((detail) => [detail.trait, detail]));
+  for (const detail of finalEntry.result.synergyDetails) {
     const previous = baseMap.get(detail.trait);
     if (!previous) {
-      reasons.push(`Adds ${detail.trait} (+${formatNumber(detail.bonus)})`);
+      reasons.push(`Activates ${detail.trait} (+${formatNumber(detail.bonus)})`);
     } else if (detail.bonus > previous.bonus) {
-      reasons.push(`Boosts ${detail.trait} from +${formatNumber(previous.bonus)} to +${formatNumber(detail.bonus)}`);
+      reasons.push(`Boosts ${detail.trait} to +${formatNumber(detail.bonus)}`);
     }
   }
   if (candidate.numberPower > 0) reasons.push(`Includes Number Power +${formatNumber(candidate.numberPower)}`);
   if (candidate.localComboBonus > 0) reasons.push(`Includes Local Combo +${formatNumber(candidate.localComboBonus)}`);
-  return reasons.slice(0, 5);
+  return [...new Set(reasons)].slice(0, 4);
 }
 
-async function findBestWalletUpgrade(walletItems, marketItems, config, onProgress) {
-  if (!walletItems.length || !marketItems.length) {
+async function buildBestWalletPlan(walletItems, marketItems, config, onProgress) {
+  const shortlist = buildWalletMarketShortlist(marketItems);
+  const unionItems = [...walletItems, ...shortlist];
+  if (!unionItems.length) {
     return null;
   }
-  const baseEntry = await buildBeamBestTeam(walletItems, config);
-  const walletSet = new Set(walletItems.map((item) => item.address));
-  const shortlist = buildWalletMarketShortlist(marketItems).filter((item) => !walletSet.has(item.address));
-  let best = null;
 
-  for (let index = 0; index < shortlist.length; index += 1) {
-    const candidate = shortlist[index];
-    const upgraded = await buildBeamBestTeam([...walletItems, candidate], config);
-    const delta = upgraded.result.totalScore - baseEntry.result.totalScore;
-    if (!best || delta > best.delta || (delta === best.delta && candidate.salePriceValue < best.candidate.salePriceValue)) {
-      best = {
-        candidate,
-        before: baseEntry,
-        after: upgraded,
-        delta,
-        reasons: buildWalletUpgradeReasons(baseEntry, upgraded, candidate)
-      };
+  const groups = EMOTIONS.map((emotion) =>
+    buildEmotionCandidatePool(unionItems.filter((item) => item.emotion === emotion), config.searchWidth)
+  );
+  const beamWidth = Math.max(140, Math.min(2200, config.searchWidth * 7));
+  let beam = [{
+    ...evaluateWalletPlanEntry([], config),
+    optimistic: getRemainingMaxPower(groups, 0)
+  }];
+
+  for (let index = 0; index < groups.length; index += 1) {
+    const candidates = groups[index];
+    const seen = new Map();
+
+    if (!candidates.length) {
+      beam = beam.map((entry) => {
+        const team = [...entry.team, null];
+        const result = evaluateWalletPlanEntry(team, config);
+        return {
+          ...result,
+          optimistic: result.result.totalScore + getRemainingMaxPower(groups, index + 1)
+        };
+      });
+      continue;
     }
+
+    for (const entry of beam) {
+      for (const item of candidates) {
+        const team = [...entry.team, item];
+        const result = evaluateWalletPlanEntry(team, config);
+        const optimistic = result.result.totalScore + getRemainingMaxPower(groups, index + 1);
+        const key = getTeamIdentity(team);
+        const current = seen.get(key);
+        const candidateEntry = { ...result, optimistic };
+        if (!current || compareWalletPlanEntries(candidateEntry, current) < 0 || candidateEntry.optimistic > current.optimistic) {
+          seen.set(key, candidateEntry);
+        }
+      }
+    }
+
+    beam = [...seen.values()]
+      .sort((a, b) =>
+        b.result.coverage - a.result.coverage
+        || b.optimistic - a.optimistic
+        || b.result.totalScore - a.result.totalScore
+        || a.buyCount - b.buyCount
+        || a.buyCost - b.buyCost
+      )
+      .slice(0, beamWidth);
+
     if (typeof onProgress === "function") {
-      onProgress(`Evaluating listed market upgrades ${index + 1}/${shortlist.length}...`, { step: index + 1, total: shortlist.length });
+      onProgress(`Building strongest keep + buy plan: emotion ${index + 1}/7...`, { step: index + 1, total: groups.length, beamSize: beam.length });
     }
     await sleep(0);
   }
 
-  return best;
+  return beam
+    .filter((entry) => entry.result.coverage > 0)
+    .sort(compareWalletPlanEntries)[0] || null;
 }
 
-function renderWalletUpgrade(bestUpgrade) {
+function buildWalletPlan(currentTeam, finalEntry) {
+  if (!finalEntry) {
+    return null;
+  }
+  const buyDetails = finalEntry.buyItems.map((item) => ({
+    item,
+    reasons: buildWalletPlanReasons(currentTeam, finalEntry, item)
+  }));
+  return {
+    currentTeam,
+    finalEntry,
+    keepItems: finalEntry.keepItems,
+    buyItems: finalEntry.buyItems,
+    buyDetails,
+    buyCount: finalEntry.buyCount,
+    buyCost: finalEntry.buyCost,
+    delta: finalEntry.result.totalScore - (currentTeam?.result?.totalScore || 0)
+  };
+}
+
+function renderWalletPlan(walletPlan) {
   const root = document.getElementById("walletUpgradeCard");
   const meta = document.getElementById("walletUpgradeMeta");
-  if (!bestUpgrade || !bestUpgrade.candidate || bestUpgrade.delta <= 0) {
-    root.innerHTML = `<div class="empty-state">No positive single-orc upgrade was found from the currently listed Cavern market items.</div>`;
-    meta.textContent = "No listed Cavern orc currently improves the wallet's best team.";
+  if (!walletPlan || !walletPlan.finalEntry || !walletPlan.finalEntry.result.coverage) {
+    root.innerHTML = `<div class="empty-state">No combined Cavern team could be built from the wallet and current market listings.</div>`;
+    meta.textContent = "No final keep + buy plan is available right now.";
     return;
   }
-  const candidate = bestUpgrade.candidate;
-  meta.textContent = `Best listed upgrade: +${formatNumber(bestUpgrade.delta)} total PWR · upgraded team ${formatNumber(bestUpgrade.after.result.totalScore)} PWR`;
-  const reasonRows = bestUpgrade.reasons.map((reason) => `
+
+  const { finalEntry, buyItems, keepItems, buyDetails, buyCost, delta } = walletPlan;
+  meta.textContent = `Final plan: ${formatNumber(finalEntry.result.totalScore)} total PWR · keep ${keepItems.length} · buy ${buyItems.length} · ${formatTonAmount(buyCost)}`;
+  const slots = EMOTIONS.map((emotion, index) => {
+    const item = finalEntry.team[index];
+    if (!item) {
+      return `<div class="slot empty"><div class="slot-cover"></div><div class="slot-body"><div class="slot-tag">${escapeHtml(emotion)}</div><div class="slot-meta">0 PWR</div><div class="slot-score"><div class="score-main">No candidate</div><div class="score-sub">empty slot</div></div></div></div>`;
+    }
+    const breakdown = [];
+    if (item.numberPower > 0) breakdown.push(`<div class="slot-breakdown-line">Number Power: +${formatNumber(item.numberPower)}</div>`);
+    if (item.localComboBonus > 0) breakdown.push(`<div class="slot-breakdown-line">Local Combo: +${formatNumber(item.localComboBonus)}</div>`);
+    if (item.source === "market" && item.salePriceValue > 0) breakdown.push(`<div class="slot-breakdown-line">${escapeHtml(formatTonPrice(item))}</div>`);
+    return `
+      <div class="slot">
+        <div class="slot-cover"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'"></div>
+        <div class="slot-body">
+          <div class="slot-tag">${escapeHtml(emotion)}</div>
+          <div class="slot-meta">${formatNumber(item.power)} PWR</div>
+          <div class="slot-badges">${getWalletTeamBadges(item, finalEntry, [{ className: item.source === "market" ? "buy" : "keep", label: item.source === "market" ? "Buy" : "Keep" }]) || '<span class="slot-pill">Base</span>'}</div>
+          <div class="slot-score"><div class="score-main">${escapeHtml(item.name)}</div><div class="score-sub">${escapeHtml(emotion)}</div></div>
+          ${breakdown.length ? `<div class="slot-breakdown">${breakdown.join("")}</div>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+  const buyRows = buyDetails.map((entry) => `
     <div class="mini-row">
       <div>
-        <strong>${escapeHtml(reason)}</strong>
-        <span>Why this purchase improves the current wallet team.</span>
+        <strong>${escapeHtml(entry.item.name)}</strong>
+        <span>${escapeHtml(entry.item.emotion)} · ${escapeHtml(entry.item.saleMarket || "Getgems")} · ${escapeHtml(entry.reasons.join(" · "))}</span>
       </div>
+      <strong>${escapeHtml(formatTonPrice(entry.item))}</strong>
     </div>
   `).join("");
-  const synergyRows = bestUpgrade.after.result.synergyDetails.slice(0, 4).map((detail) => `
+  const keepRows = keepItems.map((item) => `
+    <div class="mini-row">
+      <div>
+        <strong>${escapeHtml(item.name)}</strong>
+        <span>${escapeHtml(item.emotion)} · already owned · ${formatNumber(item.power)} base PWR</span>
+      </div>
+      <strong>Keep</strong>
+    </div>
+  `).join("");
+  const teamSignals = finalEntry.result.synergyDetails.slice(0, 5).map((detail) => `
     <div class="mini-row">
       <div>
         <strong>${escapeHtml(detail.trait)}</strong>
-        <span>${formatNumber(detail.count)} matches in the upgraded team.</span>
+        <span>${formatNumber(detail.count)} matches in the final team.</span>
       </div>
       <strong>+${formatNumber(detail.bonus)}</strong>
     </div>
   `).join("");
   root.innerHTML = `
-    <div class="wallet-upgrade-grid">
-      <div class="wallet-upgrade-main">
-        <img src="${escapeHtml(candidate.image)}" alt="${escapeHtml(candidate.name)}" loading="lazy" onerror="this.src='c-logo-nobg.png'">
-        <div class="orc-name" style="text-align:center">${escapeHtml(candidate.name)}</div>
-        <div class="orc-sub" style="text-align:center">${escapeHtml(candidate.emotion)} · listed now</div>
-        <div class="wallet-upgrade-price">${escapeHtml(formatTonPrice(candidate))}</div>
-        <div class="wallet-upgrade-market">${escapeHtml(candidate.saleMarket || "Getgems listing")}</div>
-        <div class="orc-stats" style="justify-content:center;margin-top:12px">
-          <span class="tag">+${formatNumber(bestUpgrade.delta)} PWR</span>
-          <span class="tag">Power ${formatNumber(candidate.power)}</span>
-          ${candidate.numberPower > 0 ? `<span class="tag">Number +${formatNumber(candidate.numberPower)}</span>` : ""}
-          ${candidate.localComboBonus > 0 ? `<span class="tag">Combo +${formatNumber(candidate.localComboBonus)}</span>` : ""}
+    <div class="wallet-plan-stack">
+      <div class="team-board">
+        <div class="team-head">
+          <div class="variant-titleline">
+            <span class="variant-rank">Plan</span>
+            <span class="variant-title">Final Team</span>
+            <span class="variant-meta">(${finalEntry.result.coverage} Orcs, ${formatNumber(finalEntry.result.teamPower)} PWR)</span>
+          </div>
+          <div class="team-badges">
+            <span class="team-pill green">Keep x${formatNumber(keepItems.length)}</span>
+            <span class="team-pill orange">Buy x${formatNumber(buyItems.length)}</span>
+            <span class="team-pill blue">${escapeHtml(formatTonAmount(buyCost))}</span>
+            <span class="team-pill violet">Delta +${formatNumber(delta)} PWR</span>
+          </div>
+        </div>
+        <div class="team-slots">${slots}</div>
+      </div>
+      <div class="wallet-plan-panels">
+        <div class="wallet-plan-panel">
+          <div class="lbl">Buy List</div>
+          <div class="mini-list">${buyRows || '<div class="empty-state wallet-plan-empty">No purchases needed. The current owned roster already gives the best plan from the analyzed pool.</div>'}</div>
+        </div>
+        <div class="wallet-plan-panel">
+          <div class="lbl">Keep Core</div>
+          <div class="mini-list">${keepRows || '<div class="empty-state wallet-plan-empty">No owned Cavern orcs are used in the final plan.</div>'}</div>
         </div>
       </div>
-      <div class="wallet-upgrade-meta">
-        <div>
-          <div class="lbl">Why It Helps</div>
-          <div class="mini-list">${reasonRows}</div>
-        </div>
-        <div>
-          <div class="lbl">Upgraded Team Signals</div>
-          <div class="mini-list">${synergyRows || '<div class="empty-state">No visible synergy changes.</div>'}</div>
-        </div>
+      <div class="wallet-plan-panel">
+        <div class="lbl">Final Team Signals</div>
+        <div class="mini-list">${teamSignals || '<div class="empty-state wallet-plan-empty">No active team signals in the final plan.</div>'}</div>
       </div>
     </div>`;
 }
@@ -2507,41 +3346,53 @@ async function runWalletAnalysis() {
   }
   try {
     const config = getWalletConfig();
-    setWalletStatus("Loading wallet Cavern orcs...", "warn", 0);
-    const walletRaw = await fetchWalletCavernItems(walletAddress, config, (message) => {
-      setWalletStatus(message, "warn", 18);
+    setWalletStatus("Loading owned Cavern orcs from the wallet...", "warn", 0);
+    const walletRaw = await fetchWalletCavernItems(walletAddress, config, (message, meta) => {
+      setWalletStatus(message, "warn", getWalletOwnedFetchProgress(meta?.page || 0));
     });
-    const walletItems = walletRaw.map((item) => normalizeItem(item, config)).filter((item) => item.matchesFocus);
-    setWalletStatus(`Loaded ${walletItems.length} owned Cavern orcs. Building current best team...`, "warn", 36);
-    const currentTeam = await buildBeamBestTeam(walletItems, config, (message, meta) => {
-      setWalletStatus(`Owned team: ${message}`, "warn", 36 + clamp(((meta?.step || 0) / (meta?.total || 7)) * 18, 0, 18));
-    });
-    setWalletStatus("Scanning live listed Cavern market orcs...", "warn", 60);
+    const walletItems = walletRaw
+      .map((item) => ({ ...normalizeItem(item, config), source: "owned" }))
+      .filter((item) => item.matchesFocus);
+    let currentTeam = null;
+    if (walletItems.length) {
+      setWalletStatus(`Loaded ${walletItems.length} owned Cavern orcs. Building current owned team...`, "warn", 24);
+      currentTeam = await buildBeamBestTeam(walletItems, config, (message, meta) => {
+        setWalletStatus(`Owned team: ${message}`, "warn", getWalletOwnedBuildProgress(meta?.step || 0, meta?.total || 7));
+      });
+    } else {
+      setWalletStatus("No owned Cavern orcs found. Building a market-assisted plan instead...", "warn", 44);
+    }
+    setWalletStatus("Scanning live listed Cavern market orcs...", "warn", 48);
     const marketRaw = await fetchListedWalletMarketItems(config, (message, meta) => {
-      const progress = 60 + clamp(((meta?.checkedCount || 0) / (meta?.totalCount || Math.max(meta?.checkedCount || 1, 1))) * 16, 0, 16);
+      const progress = getWalletMarketFetchProgress(meta?.checkedCount || 0, meta?.totalCount || Math.max(meta?.checkedCount || 1, 1));
       setWalletStatus(message, "warn", progress);
     });
     const ownedSet = new Set(walletItems.map((item) => item.address));
     const marketItems = marketRaw
-      .map((item) => normalizeItem(item, config))
+      .map((item) => ({ ...normalizeItem(item, config), source: "market" }))
       .filter((item) => item.matchesFocus && !ownedSet.has(item.address) && item.salePriceValue > 0);
-    setWalletStatus(`Loaded ${marketItems.length} listed Cavern orcs. Evaluating best +1 upgrade...`, "warn", 78);
-    const bestUpgrade = await findBestWalletUpgrade(walletItems, marketItems, config, (message, meta) => {
-      setWalletStatus(message, "warn", 80 + clamp(((meta?.step || 0) / (meta?.total || 1)) * 18, 0, 18));
+    setWalletStatus(`Loaded ${marketItems.length} listed Cavern orcs. Building the strongest keep + buy plan...`, "warn", 80);
+    const finalEntry = await buildBestWalletPlan(walletItems, marketItems, config, (message, meta) => {
+      setWalletStatus(message, "warn", getWalletPlanBuildProgress(meta?.step || 0, meta?.total || 1));
     });
+    const walletPlan = buildWalletPlan(currentTeam, finalEntry);
     state.walletItems = walletItems;
     state.walletMarketItems = marketItems;
     state.walletCurrentTeam = currentTeam;
-    state.walletBestUpgrade = bestUpgrade;
-    renderWalletSummary(walletItems, currentTeam, marketItems, bestUpgrade);
+    state.walletPlan = walletPlan;
+    renderWalletSummary(walletItems, currentTeam, marketItems, walletPlan);
     renderWalletCurrentTeam(currentTeam);
     renderWalletOwnedGrid(walletItems);
-    renderWalletUpgrade(bestUpgrade);
-    if (!walletItems.length) {
-      setWalletStatus("No Cavern orcs were found in this wallet.", "err", 100);
+    renderWalletPlan(walletPlan);
+    if (!walletItems.length && (!walletPlan || !walletPlan.finalEntry)) {
+      setWalletStatus("No Cavern orcs were found in this wallet or in the current listed market sample.", "err", 100);
       return;
     }
-    setWalletStatus(`Done: loaded ${walletItems.length} owned Cavern orcs and checked ${marketItems.length} listed market candidates.`, "ok", 100);
+    if (!walletItems.length) {
+      setWalletStatus(`Done: no owned Cavern orcs found, but built a market-assisted plan with ${walletPlan?.buyCount || 0} buys.`, "ok", 100);
+      return;
+    }
+    setWalletStatus(`Done: loaded ${walletItems.length} owned Cavern orcs and built a final plan with ${walletPlan?.buyCount || 0} buys from ${marketItems.length} listed candidates.`, "ok", 100);
   } catch (error) {
     console.error(error);
     setWalletStatus(error.message || "Failed to analyze wallet.", "err", 100);
